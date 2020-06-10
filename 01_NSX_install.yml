@@ -1,0 +1,71 @@
+---
+- name: NSX global parameters
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  # vars:
+  #   username: "{{apic_user}}"
+  #   password: "{{apic_pass}}"
+
+  tasks:
+
+
+
+    - name: Lists all compute managers
+      nsxt_fabric_compute_managers_facts:
+        hostname: "192.168.2.30"
+        username: "admin"
+        password: "Spacemonkeys20!"
+        validate_certs: False    
+      register: cpu_mgr
+
+    - name: View all compute managers
+      debug:
+        msg: "{{cpu_mgr}}"
+
+
+    # - name: Delete data directories
+    #   file:
+    #     path: ./{{item}}
+    #     state: absent
+    #   with_items:
+    #     - 'data'
+    #     - 'data'
+    #     - 'fragments'
+
+    # - name: Create data directories
+    #   file:
+    #     path: ./data/fragments
+    #     state: directory
+
+    # - name: Copy & prepare the uploaded input Excel file
+    #   copy:
+    #     src: "{{aci_filepath}}/"
+    #     dest: "./data/{{aci_filename}}"
+
+    # - name: Initialize the excel file to use the input data
+    #   xls_to_facts:
+    #     src: "./data/{{aci_filename}}"
+    #   tags:
+    #     - excel
+
+    # - name: Create fabric pod model from spreadsheet devices
+    #   template:
+    #     src: "./templates/{{item}}_fab_pod.j2"
+    #     dest: "./data/fragments/{{item}}_fab_pod.yml"
+    #   with_items:
+    #     - '00'
+    #     - '01'
+
+    # - name: Assemble fabric Pod model
+    #   assemble:
+    #     src: "./data/fragments/"
+    #     dest: "./data/fab_pod.yml"
+
+    # - name: load data
+    #   include_vars:
+    #     file: "./data/fab_pod.yml"   
+
+
+
+
