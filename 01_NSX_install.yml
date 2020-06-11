@@ -13,7 +13,7 @@
 
     - name: Lists all compute managers
       nsxt_fabric_compute_managers:
-        hostname: "{{NSXT-IP}}"
+        hostname: "{{nsxt-ip}}"
         username: "{{nsx-username}}"
         password: "{{nsx-password}}"
         validate_certs: False
