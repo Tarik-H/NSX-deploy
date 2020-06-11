@@ -26,6 +26,8 @@
     debug:
       msg: "{{cpu_mgr}}"
 
+
+
     # - name: Delete data directories
     #   file:
     #     path: ./{{item}}
