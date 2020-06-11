@@ -51,7 +51,7 @@ Please note that this job assumes the NSX-T Local Manager to be already deployed
             <entry key='ansible-base-dir-path' value='/var/rundeck/projects/NSX-deploy/scm' />
             <entry key='ansible-become' value='false' />
             <entry key='ansible-disable-limit' value='false' />
-            <entry key='ansible-extra-vars' value='nsxt-ip: ${option.NSXT-IP}&#10;nsx-username: ${option.nsx-username}&#10;nsx-password: ${option.nsx-password}&#10;vcenter-user: ${option.vCenter_username}&#10;vcenter-pass: ${option.vCenter-password}&#10;nsx_filepath: ${file.nsx_file}&#10;nsx_filename: ${file.nsx_file.fileName}' />
+            <entry key='ansible-extra-vars' value='nsxt_ip: ${option.NSXT-IP}&#10;nsx_username: ${option.nsx-username}&#10;nsx_password: ${option.nsx-password}&#10;vcenter_user: ${option.vCenter_username}&#10;vcenter_pass: ${option.vCenter-password}&#10;nsx_filepath: ${file.nsx_file}&#10;nsx_filename: ${file.nsx_file.fileName}' />
             <entry key='ansible-playbook' value='/var/rundeck/projects/NSX-deploy/scm/01_NSX_install.yml' />
             <entry key='ansible-ssh-passphrase-option' value='option.password' />
             <entry key='ansible-ssh-use-agent' value='false' />
