@@ -3,31 +3,28 @@
   hosts: localhost
   connection: local
   gather_facts: no
-  # vars:
-  #   username: "{{apic_user}}"
-  #   password: "{{apic_pass}}"
 
   tasks:
-    - name: Lists all compute managers
+  - name: Lists all compute managers
       nsxt_fabric_compute_managers:
-        hostname: "{{nsxt-ip}}"
-        username: "{{nsx-username}}"
-        password: "{{nsx-password}}"
-        validate_certs: False
-        display_name: "lab vcenter"
-        server: "192.168.2.20"
-        description: "Lab vcenter"
-        origin_type: vCenter
-        credential:
-          credential_type: "UsernamePasswordLoginCredential"
-          username: "{{vcenter-user}}"
-          password: "{{vcenter-pass}}"
-        state: present
-      register: cpu_mgr
+      #   hostname: "{{nsxt-ip}}"
+      #   username: "{{nsx-username}}"
+      #   password: "{{nsx-password}}"
+      #   validate_certs: False
+      #   display_name: "lab vcenter"
+      #   server: "192.168.2.20"
+      #   description: "Lab vcenter"
+      #   origin_type: vCenter
+      #   credential:
+      #     credential_type: "UsernamePasswordLoginCredential"
+      #     username: "{{vcenter-user}}"
+      #     password: "{{vcenter-pass}}"
+      #   state: present
+      # register: cpu_mgr
 
-    - name: View all compute managers
-      debug:
-        msg: "{{cpu_mgr}}"
+    # - name: View all compute managers
+    #   debug:
+    #     msg: "{{cpu_mgr}}"
 
     # - name: Delete data directories
     #   file:
