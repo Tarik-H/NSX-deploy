@@ -8,9 +8,6 @@
   #   password: "{{apic_pass}}"
 
   tasks:
-
-
-
     - name: Lists all compute managers
       nsxt_fabric_compute_managers:
         hostname: "{{nsxt-ip}}"
@@ -25,7 +22,7 @@
           credential_type: "UsernamePasswordLoginCredential"
           username: "{{vcenter-user}}"
           password: "{{vcenter-pass}}"
-        state: present         
+        state: present
       register: cpu_mgr
 
     - name: View all compute managers
