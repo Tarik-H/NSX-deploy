@@ -7,7 +7,7 @@
   tasks:
   - name: Lists all compute managers
     nsxt_fabric_compute_managers:
-      hostname: "{{nsxt-ip}}"
+      hostname: "192.168.2.30"
       username: "{{nsx-username}}"
       password: "{{nsx-password}}"
       validate_certs: False
