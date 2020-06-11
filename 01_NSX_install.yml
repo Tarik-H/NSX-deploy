@@ -8,8 +8,8 @@
   - name: Lists all compute managers
     nsxt_fabric_compute_managers:
       hostname: "192.168.2.30"
-      username: "{{nsx-username}}"
-      password: "{{nsx-password}}"
+      # username: "{{nsx-username}}"
+      # password: "{{nsx-password}}"
       validate_certs: False
       display_name: "lab vcenter"
       server: "192.168.2.20"
