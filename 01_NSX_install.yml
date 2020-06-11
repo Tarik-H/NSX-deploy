@@ -21,7 +21,6 @@
         password: "{{vcenter-pass}}"
       state: present
 
-
   # - name: View all compute managers
   #   debug:
   #     msg: "{{cpu_mgr}}"
