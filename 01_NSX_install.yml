@@ -20,11 +20,11 @@
         username: "{{vcenter-user}}"
         password: "{{vcenter-pass}}"
       state: present
-    register: cpu_mgr
 
-  - name: View all compute managers
-    debug:
-      msg: "{{cpu_mgr}}"
+
+  # - name: View all compute managers
+  #   debug:
+  #     msg: "{{cpu_mgr}}"
 
 
 
