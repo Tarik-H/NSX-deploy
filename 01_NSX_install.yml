@@ -7,9 +7,9 @@
   tasks:
   - name: Lists all compute managers
     nsxt_fabric_compute_managers:
-      hostname: "192.168.2.30"
-      # username: "{{nsx-username}}"
-      # password: "{{nsx-password}}"
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
       validate_certs: False
       display_name: "lab vcenter"
       server: "192.168.2.20"
@@ -17,13 +17,14 @@
       origin_type: vCenter
       credential:
         credential_type: "UsernamePasswordLoginCredential"
-        username: "{{vcenter-user}}"
-        password: "{{vcenter-pass}}"
+        username: "{{vcenter_user}}"
+        password: "{{vcenter_pass}}"
       state: present
+    register: cpu_mgr
 
-  # - name: View all compute managers
-  #   debug:
-  #     msg: "{{cpu_mgr}}"
+  - name: View all compute managers
+    debug:
+      msg: "{{cpu_mgr}}"
 
 
 
