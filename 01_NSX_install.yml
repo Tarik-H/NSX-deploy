@@ -68,8 +68,4 @@
 
     # - name: load data
     #   include_vars:
-    #     file: "./data/fab_pod.yml"   
-
-
-
-
+    #     file: "./data/fab_pod.yml"
