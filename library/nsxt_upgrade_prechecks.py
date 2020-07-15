@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #
 # Copyright 2019 VMware, Inc.
+# SPDX-License-Identifier: BSD-2-Clause OR GPL-3.0-only
 #
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
 # BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -165,6 +166,16 @@ def main():
     except Exception as err:
       module.fail_json(msg='Pre upgrade checks were executed successfully but error'
                   ' occured while retrieving the results. Error [%s]' % (to_native(err)))
+    # Fail module in case any pre upgrade check fails
+    prechecks_failure = False
+    if  'results' in resp:
+      for result in resp['results']:
+        if  'type' in result and result['type'] == 'FAILURE':
+          prechecks_failure = True
+    if prechecks_failure:
+      module.fail_json(msg='Pre upgrade checks are performed successsfully. Found errors. '
+                            'Thus, you cannot proceed. To get full report run upgrade groups '
+                            'facts module. Precheck results: %s' % str(resp))
     module.exit_json(changed=changed, message='Pre upgrade checks are performed successfully:'
                      ' Failures are listed. To get full report run upgrade groups '
                      'facts module.' + str(resp))

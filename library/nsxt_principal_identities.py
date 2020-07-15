@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #
 # Copyright 2018 VMware, Inc.
+# SPDX-License-Identifier: BSD-2-Clause OR GPL-3.0-only
 #
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
 # BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -74,6 +75,10 @@ options:
         description: 'Description of this resource'
         required: false
         type: bool
+    tags:
+        description: Opaque identifier meaninful to API user
+        required: false
+        type: Array of Tag
     state:
         choices:
             - present
@@ -223,6 +228,7 @@ def main():
                        resource_type=dict(required=False, type='str'),
                        id=dict(required=False, type='str'),
                        is_protected=dict(required=False, type='bool'),
+                       tags=dict(required=False, type='list'),
                     state=dict(required=True, choices=['present', 'absent']))
   '''
   Core function of the module reponsible for adding and deleting the certififcate.

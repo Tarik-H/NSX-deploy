@@ -12,7 +12,7 @@
       password: "{{nsx_password}}"
       validate_certs: False
       display_name: "lab vcenter"
-      server: "192.168.2.20"
+      server: "172.28.47.10"
       description: "Lab vcenter"
       origin_type: vCenter
       credential:
