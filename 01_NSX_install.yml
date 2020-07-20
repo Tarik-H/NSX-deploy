@@ -63,8 +63,8 @@
         password: "{{vcenter_pass}}"
       state: present
     register: cpu_mgr
-    with_items: "{{system_fabric.vcenters-list}}"
-    when: system_fabric.vcenters-list
+    with_items: "{{system_fabric.vcenters_list}}"
+    when: system_fabric.vcenters_list
 
   - name: View all compute managers
     debug:
