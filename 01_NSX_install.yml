@@ -55,7 +55,7 @@
       validate_certs: False
       display_name: "lab vcenter"
       server: "{{item}}"
-      description: "vCenter:{{item}}"
+      description: "vCenter_{{item}}"
       origin_type: vCenter
       credential:
         credential_type: "UsernamePasswordLoginCredential"
