@@ -3,9 +3,9 @@
 ---
 
 system_fabric:
-  vcenters-list:
-{%if vcenters-list %}
-{% for vc in vcenters-list.split(',')|ipaddr %}
+  vcenters_list:
+{%if vcenters_list %}
+{% for vc in vcenters_list.split(',')|ipaddr %}
     - {{vc|ipaddr}}
 {% endfor %}
 {%endif%}
