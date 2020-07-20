@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+{% set fabric = spreadsheet_infra %}
+---
+
+system_fabric:
+  vcenters-list:
+{%if vcenters-list %}
+{% for vc in vcenters-list.split(',')|ipaddr %}
+    - {{vc|ipaddr}}
+{% endfor %}

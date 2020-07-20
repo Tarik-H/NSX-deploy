@@ -5,15 +5,57 @@
   gather_facts: no
 
   tasks:
-  - name: Lists all compute managers
+
+  - name: Delete data directories
+    file:
+      path: ./{{item}}
+      state: absent
+    with_items:
+      - 'data'
+      - 'data'
+      - 'fragments'
+
+  - name: Create data directories
+    file:
+      path: ./data/fragments
+      state: directory
+
+  # - name: Copy & prepare the uploaded input Excel file
+  #   copy:
+  #     src: "{{nsx_filepath}}/"
+  #     dest: "./data/{{nsx_filename}}"
+
+  # - name: Initialize the excel file to use the input data
+  #   xls_to_facts:
+  #     src: "./data/{{nsx_filename}}"
+  #   tags:
+  #     - excel
+
+  - name: Create system fabric model from spreadsheet data
+    template:
+      src: "./templates/{{item}}_system_fabric.j2"
+      dest: "./data/fragments/{{item}}_system_fabric.yml"
+    with_items:
+      - '01'
+
+  - name: Assemble fabric model
+    assemble:
+      src: "./data/fragments/"
+      dest: "./data/system_fabric.yml"
+
+  - name: load data
+    include_vars:
+      file: "./data/system_fabric.yml"
+
+  - name: Provision list of compute managers
     nsxt_fabric_compute_managers:
       hostname: "{{nsxt_ip}}"
       username: "{{nsx_username}}"
       password: "{{nsx_password}}"
       validate_certs: False
       display_name: "lab vcenter"
-      server: "172.28.46.30"
-      description: "Lab vcenter"
+      server: "{{item}}"
+      description: "vCenter:{{item}}"
       origin_type: vCenter
       credential:
         credential_type: "UsernamePasswordLoginCredential"
@@ -21,6 +63,8 @@
         password: "{{vcenter_pass}}"
       state: present
     register: cpu_mgr
+    with_items: {{system_fabric.vcenters-list}}
+    when: system_fabric.vcenters-list
 
   - name: View all compute managers
     debug:
@@ -28,44 +72,4 @@
 
 
 
-    # - name: Delete data directories
-    #   file:
-    #     path: ./{{item}}
-    #     state: absent
-    #   with_items:
-    #     - 'data'
-    #     - 'data'
-    #     - 'fragments'
 
-    # - name: Create data directories
-    #   file:
-    #     path: ./data/fragments
-    #     state: directory
-
-    # - name: Copy & prepare the uploaded input Excel file
-    #   copy:
-    #     src: "{{aci_filepath}}/"
-    #     dest: "./data/{{aci_filename}}"
-
-    # - name: Initialize the excel file to use the input data
-    #   xls_to_facts:
-    #     src: "./data/{{aci_filename}}"
-    #   tags:
-    #     - excel
-
-    # - name: Create fabric pod model from spreadsheet devices
-    #   template:
-    #     src: "./templates/{{item}}_fab_pod.j2"
-    #     dest: "./data/fragments/{{item}}_fab_pod.yml"
-    #   with_items:
-    #     - '00'
-    #     - '01'
-
-    # - name: Assemble fabric Pod model
-    #   assemble:
-    #     src: "./data/fragments/"
-    #     dest: "./data/fab_pod.yml"
-
-    # - name: load data
-    #   include_vars:
-    #     file: "./data/fab_pod.yml"
