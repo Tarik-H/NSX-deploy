@@ -63,7 +63,7 @@
         password: "{{vcenter_pass}}"
       state: present
     register: cpu_mgr
-    with_items: {{system_fabric.vcenters-list}}
+    with_items: "{{system_fabric.vcenters-list}}"
     when: system_fabric.vcenters-list
 
   - name: View all compute managers
