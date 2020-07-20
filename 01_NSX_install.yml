@@ -36,7 +36,7 @@
       src: "./templates/{{item}}_system_fabric.j2"
       dest: "./data/fragments/{{item}}_system_fabric.yml"
     with_items:
-      - '01'
+      - "01"
 
   - name: Assemble fabric model
     assemble:
