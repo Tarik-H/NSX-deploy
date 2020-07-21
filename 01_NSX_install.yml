@@ -70,6 +70,25 @@
     debug:
       msg: "{{cpu_mgr}}"
 
-
+  - name: create IP Pool
+    nsxt_policy_ip_pool:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      id: NSX_TEP_POOL
+      display_name: NSX_TEP_POOL
+      state: "present"
+      pool_static_subnets:
+        - id: "TEP_subnet_{{item|ipaddr('host/prefix') | ipaddr('subnet')}}"
+          state: present
+          allocation_ranges:
+            - start: '192.116.0.10'
+              end: '192.116.0.20'
+            - start: '192.116.0.30'
+              end: '192.116.0.40'
+          cidr: "{{item|ipaddr('host/prefix') | ipaddr('subnet')}}"
+      with_items: "{{system_fabric.tep_pool_gws}}"  
+      when: system_fabric.tep_pool_gws|ipaddr
 
 

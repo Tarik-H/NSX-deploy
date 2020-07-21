@@ -9,3 +9,9 @@ system_fabric:
     - {{vc|ipaddr}}
 {% endfor %}
 {%endif%}
+{%if tep_pool_gw %}
+  tep_pool_gws:
+{% for tep in tep_pool_gw.split(',')|ipaddr %}
+    - {{tep|ipaddr('host/prefix')}}
+{% endfor %}
+{%endif%}
