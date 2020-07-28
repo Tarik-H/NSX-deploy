@@ -47,48 +47,71 @@
     include_vars:
       file: "./data/system_fabric.yml"
 
-  - name: Provision list of compute managers
-    nsxt_fabric_compute_managers:
+  # - name: Provision list of compute managers
+  #   nsxt_fabric_compute_managers:
+  #     hostname: "{{nsxt_ip}}"
+  #     username: "{{nsx_username}}"
+  #     password: "{{nsx_password}}"
+  #     validate_certs: False
+  #     display_name: "vCenter_{{item}}"
+  #     server: "{{item}}"
+  #     description: "vCenter_{{item}}"
+  #     origin_type: vCenter
+  #     credential:
+  #       credential_type: "UsernamePasswordLoginCredential"
+  #       username: "{{vcenter_user}}"
+  #       password: "{{vcenter_pass}}"
+  #     state: present
+  #   register: cpu_mgr
+  #   with_items: "{{system_fabric.vcenters_list}}"
+  #   when: system_fabric.vcenters_list
+
+  # - name: View all compute managers
+  #   debug:
+  #     msg: "{{cpu_mgr}}"
+
+  - name: Create transport zone
+    nsxt_transport_zones:
       hostname: "{{nsxt_ip}}"
       username: "{{nsx_username}}"
       password: "{{nsx_password}}"
       validate_certs: False
-      display_name: "vCenter_{{item}}"
-      server: "{{item}}"
-      description: "vCenter_{{item}}"
-      origin_type: vCenter
-      credential:
-        credential_type: "UsernamePasswordLoginCredential"
-        username: "{{vcenter_user}}"
-        password: "{{vcenter_pass}}"
-      state: present
-    register: cpu_mgr
-    with_items: "{{system_fabric.vcenters_list}}"
-    when: system_fabric.vcenters_list
-
-  - name: View all compute managers
-    debug:
-      msg: "{{cpu_mgr}}"
-
-  - name: create IP Pool
-    nsxt_policy_ip_pool:
-      hostname: "{{nsxt_ip}}"
-      username: "{{nsx_username}}"
-      password: "{{nsx_password}}"
-      validate_certs: False
-      id: NSX_TEP_POOL
-      display_name: NSX_TEP_POOL
+      resource_type: "TransportZone"
+      display_name: "TZ_{{item}}"
+      host_switch_mode: "STANDARD"
+      description: "NSX configured {{item}} Transport Zone"
+      transport_type: "{%if 'Overlay' in item%}OVERLAY{%elif 'Vlan' in item%}VLAN{%endif%}"
+      is_default: "false"
+      nested_nsx: "false"
+      host_switch_name: "NSXT-NVDS"
       state: "present"
-      pool_static_subnets:
-        - id: "TEP_subnet_{{item|ipaddr('host/prefix') | ipaddr('subnet')}}"
-          state: present
-          allocation_ranges:
-            - start: '192.116.0.10'
-              end: '192.116.0.20'
-            - start: '192.116.0.30'
-              end: '192.116.0.40'
-          cidr: "{{item|ipaddr('host/prefix') | ipaddr('subnet')}}"
-      with_items: "{{system_fabric.tep_pool_gws}}"  
-      when: system_fabric.tep_pool_gws|ipaddr
+    with_items:
+      - Overlay
+      - Vlan
+      - Edge-Vlan1
+      - Edge-Vlan2
+      - Edge-Vlan3
+      - Edge-Vlan4
+
+  # - name: create IP Pool
+  #   nsxt_policy_ip_pool:
+  #     hostname: "{{nsxt_ip}}"
+  #     username: "{{nsx_username}}"
+  #     password: "{{nsx_password}}"
+  #     validate_certs: False
+  #     id: NSX_TEP_POOL
+  #     display_name: NSX_TEP_POOL
+  #     state: "present"
+  #     pool_static_subnets:
+  #       - id: "TEP_subnet_{{item|ipaddr('host/prefix') | ipaddr('subnet')}}"
+  #         state: present
+  #         allocation_ranges:
+  #           - start: '192.116.0.10'
+  #             end: '192.116.0.20'
+  #           - start: '192.116.0.30'
+  #             end: '192.116.0.40'
+  #         cidr: "{{item|ipaddr('host/prefix') | ipaddr('subnet')}}"
+  #     with_items: "{{system_fabric.tep_pool_gws}}"  
+  #     when: system_fabric.tep_pool_gws|ipaddr
 
 
