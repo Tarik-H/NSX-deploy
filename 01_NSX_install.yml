@@ -132,8 +132,8 @@
         - id: "TEP_subnet_{{item|ipaddr('network/prefix')}}"
           state: present
           allocation_ranges:
-            - start: "{{item|ipaddr() | ipaddr('2')}}"
-              end: "{{item|ipaddr() | ipaddr('-2')}}"
+            - start: "{{item|ipaddr() | ipaddr('2')| ipaddr('address')}}"
+              end: "{{item|ipaddr() | ipaddr('-2')| ipaddr('address')}}"
           cidr: "{{item|ipaddr('network/prefix')}}"
           gateway_ip: "{{item|ipaddr('address')}}"
     loop: "{{system_fabric.tep_pool_gws}}"
