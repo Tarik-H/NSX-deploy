@@ -127,7 +127,7 @@
       id: NSX_TEP_POOL
       display_name: NSX_TEP_POOL
       state: "present"
-      create_or_update_subresource_first: 'true'    
+      create_or_update_subresource_first: true
       pool_static_subnets:
         - id: "TEP_subnet_{{item|ipaddr('network/prefix')}}"
           state: present
