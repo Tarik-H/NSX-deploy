@@ -135,10 +135,9 @@
               end: "{{item|ipaddr('net') | ipaddr('-2')}}"
           cidr: "{{item|ipaddr('net')}}"
           gateway_ip: "{{item|ipaddr('address')}}"
-      with_items: "{{system_fabric.tep_pool_gws}}"
-      when: system_fabric.tep_pool_gws is defined
-
-
+    with_items: "{{system_fabric.tep_pool_gws}}"
+    when: system_fabric.tep_pool_gws is defined
+        
   # - name: Create Uplink Profiles
   #   nsxt_uplink_profiles:
   #     hostname: "{{nsxt_ip}}"
