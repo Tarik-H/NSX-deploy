@@ -118,6 +118,27 @@
   #     - Edge-Vlan4
 
 
+  # - name: create IP Pool
+  #   nsxt_policy_ip_pool:
+  #     hostname: "{{nsxt_ip}}"
+  #     username: "{{nsx_username}}"
+  #     password: "{{nsx_password}}"
+  #     validate_certs: False
+  #     id: NSX_TEP_POOL
+  #     display_name: NSX_TEP_POOL
+  #     state: "present"
+  #     pool_static_subnets:
+  #       - id: "TEP_subnet_{{item|ipaddr('net')}}"
+  #         state: present
+  #         allocation_ranges:
+  #           - start: "{{item|ipaddr('net') | ipaddr('2')}}"
+  #             end: "{{item|ipaddr('net') | ipaddr('-2')}}"
+  #         cidr: "{{item|ipaddr('net')}}"
+  #         gateway_ip: "{{item|ipaddr('address')}}"
+  #   loop: "{{system_fabric.tep_pool_gws}}"
+  #   when: system_fabric.tep_pool_gws is defined
+
+
   - name: create IP Pool
     nsxt_policy_ip_pool:
       hostname: "{{nsxt_ip}}"
@@ -128,16 +149,16 @@
       display_name: NSX_TEP_POOL
       state: "present"
       pool_static_subnets:
-        - id: "TEP_subnet_{{item|ipaddr('net')}}"
+        - id: "TEP_subnet_192.168.50.0/24"
           state: present
           allocation_ranges:
-            - start: "{{item|ipaddr('net') | ipaddr('2')}}"
-              end: "{{item|ipaddr('net') | ipaddr('-2')}}"
-          cidr: "{{item|ipaddr('net')}}"
-          gateway_ip: "{{item|ipaddr('address')}}"
-    loop: "{{system_fabric.tep_pool_gws}}"
-    when: system_fabric.tep_pool_gws is defined
-        
+            - start: "192.168.50.2"
+              end: "192.168.50.254"
+          cidr: "192.168.50.0/24"
+          gateway_ip: "192.168.50.1"
+
+
+
   # - name: Create Uplink Profiles
   #   nsxt_uplink_profiles:
   #     hostname: "{{nsxt_ip}}"
