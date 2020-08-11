@@ -118,28 +118,35 @@
   #     - Edge-Vlan4
 
 
-  - name: create IP Pool
-    nsxt_policy_ip_pool:
-      hostname: "{{nsxt_ip}}"
-      username: "{{nsx_username}}"
-      password: "{{nsx_password}}"
-      validate_certs: False
-      id: NSX_TEP_POOL
-      display_name: NSX_TEP_POOL
-      state: "present"
-      create_or_update_subresource_first: true      
-      pool_static_subnets:
-        - id: "TEP_subnet_{{item|ipaddr('net')}}"
-          state: present
-          allocation_ranges:
-            - start: "{{item|ipaddr('net') | ipaddr('2')}}"
-              end: "{{item|ipaddr('net') | ipaddr('-2')}}"
-          cidr: "{{item|ipaddr('net')}}"
-          gateway_ip: "{{item|ipaddr('address')}}"
+  # - name: create IP Pool
+  #   nsxt_policy_ip_pool:
+  #     hostname: "{{nsxt_ip}}"
+  #     username: "{{nsx_username}}"
+  #     password: "{{nsx_password}}"
+  #     validate_certs: False
+  #     id: NSX_TEP_POOL
+  #     display_name: NSX_TEP_POOL
+  #     state: "present"
+  #     create_or_update_subresource_first: true      
+  #     pool_static_subnets:
+  #       - id: "TEP_subnet_{{item|ipaddr('net')}}"
+  #         state: present
+  #         allocation_ranges:
+  #           - start: "{{item|ipaddr('net') | ipaddr('2')}}"
+  #             end: "{{item|ipaddr('net') | ipaddr('-2')}}"
+  #         cidr: "{{item|ipaddr('net')}}"
+  #         gateway_ip: "{{item|ipaddr('address')}}"
+  #   loop: "{{system_fabric.tep_pool_gws}}"
+  #   when: system_fabric.tep_pool_gws is defined
+  #   vars: 
+  #     ansible_python_interpreter: /usr/bin/python3
+
+
+  - name: View all compute managers
+    debug:
+      msg: "{{item|ipaddr('net')}}"
     loop: "{{system_fabric.tep_pool_gws}}"
     when: system_fabric.tep_pool_gws is defined
-    vars: 
-      ansible_python_interpreter: /usr/bin/python3
 
   # - name: create IP Pool
   #   nsxt_policy_ip_pool:
