@@ -127,13 +127,13 @@
       id: NSX_TEP_POOL
       display_name: NSX_TEP_POOL
       state: "present"
-      create_or_update_subresource_first: true      
+      create_or_update_subresource_first: 'true'    
       pool_static_subnets:
         - id: "TEP_subnet_{{item|ipaddr('network/prefix')}}"
           state: present
           allocation_ranges:
-            - start: "{{item|ipaddr('network') | ipaddr('2')}}"
-              end: "{{item|ipaddr('network') | ipaddr('-2')}}"
+            - start: "{{item|ipaddr('network') | ipmath('2')}}"
+              end: "{{item|ipaddr('network') | ipmath('-2')}}"
           cidr: "{{item|ipaddr('network/prefix')}}"
           gateway_ip: "{{item|ipaddr('address')}}"
     loop: "{{system_fabric.tep_pool_gws}}"
