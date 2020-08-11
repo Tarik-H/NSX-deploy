@@ -131,9 +131,10 @@
         - id: "TEP_subnet_{{item|ipaddr('net')}}"
           state: present
           allocation_ranges:
-            - start: "{{item|ipaddr('net') | ipaddr('1')}}"
+            - start: "{{item|ipaddr('net') | ipaddr('2')}}"
               end: "{{item|ipaddr('net') | ipaddr('-2')}}"
           cidr: "{{item|ipaddr('net')}}"
+          gateway_ip: "{{item|ipaddr('address')}}"
       with_items: "{{system_fabric.tep_pool_gws}}"  
       when: system_fabric.tep_pool_gws is defined
 
