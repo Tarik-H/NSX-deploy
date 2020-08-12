@@ -130,7 +130,7 @@
       create_or_update_subresource_first: true
       do_wait_till_create: true
       pool_static_subnets:
-        - id: "TEP_subnet_{{item|ipaddr('network/prefix')}}"
+        - id: "TEP_subnet_{{item|ipaddr('network')}}"
           state: present
           allocation_ranges:
             - start: "{{item|ipaddr('2')|ipaddr('address')}}"
