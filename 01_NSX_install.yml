@@ -166,7 +166,7 @@
             - start: "192.168.100.2"
               end: "192.168.101.254"
           cidr: "192.168.100.0/23"
-          gateway_ip: "192.168.50.1"
+          gateway_ip: "192.168.100.1"
     vars: 
       ansible_python_interpreter: /usr/bin/python3
 
