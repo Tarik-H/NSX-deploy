@@ -144,7 +144,7 @@
 
   - name: View all compute managers
     debug:
-      msg: "start_{{item|ipaddr('address') | ipaddr('-2')}}"
+      msg: "start_{{item|ipaddr('address')|ipaddr('-2')}}"
     loop: "{{system_fabric.tep_pool_gws}}"
     when: system_fabric.tep_pool_gws is defined
 
