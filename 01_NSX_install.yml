@@ -175,8 +175,8 @@
       id: NSX_TEP_POOL
       display_name: NSX_TEP_POOL
       state: "present"
-      # create_or_update_subresource_first: true
-      # achieve_subresource_state_if_del_parent: 'true'
+      create_or_update_subresource_first: "true"
+      achieve_subresource_state_if_del_parent: "true"
       pool_static_subnets:
         - id: "TEP_subnet_192.168.100.0/23"
           display_name: "TEP_subnet_192.168.100.0/23"
