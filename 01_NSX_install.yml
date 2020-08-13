@@ -193,7 +193,6 @@
 
 
 
-
   # - name: Create Uplink Profiles
   #   nsxt_uplink_profiles:
   #     hostname: "{{nsxt_ip}}"
