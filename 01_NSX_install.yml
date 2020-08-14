@@ -150,21 +150,21 @@
   #   when: system_fabric.tep_pool_gws is defined
 
 
-  - name: create IP Pool
-    nsxt_ip_pools:
-      hostname: "{{nsxt_ip}}"
-      username: "{{nsx_username}}"
-      password: "{{nsx_password}}"
-      validate_certs: False
-      display_name: "TEP_subnet_192.168.100.0/23"
-      state: "present"
-      subnets:
-        - allocation_ranges:
-            - start: "192.168.100.2"
-              end: "192.168.101.254"
-          cidr: "192.168.100.0/23"
-    vars: 
-      ansible_python_interpreter: /usr/bin/python3
+  # - name: create IP Pool
+  #   nsxt_ip_pools:
+  #     hostname: "{{nsxt_ip}}"
+  #     username: "{{nsx_username}}"
+  #     password: "{{nsx_password}}"
+  #     validate_certs: False
+  #     display_name: "TEP_subnet_192.168.100.0/23"
+  #     state: "present"
+  #     subnets:
+  #       - allocation_ranges:
+  #           - start: "192.168.100.2"
+  #             end: "192.168.101.254"
+  #         cidr: "192.168.100.0/23"
+  #   vars: 
+  #     ansible_python_interpreter: /usr/bin/python3
 
   - name: create IP Pool
     nsxt_policy_ip_pool:
@@ -179,6 +179,7 @@
       achieve_subresource_state_if_del_parent: "true"
       pool_static_subnets:
         - id: "TEP_subnet_192.168.100.0/23"
+          create_or_update_subresource_first: true
           display_name: "TEP_subnet_192.168.100.0/23"
           state: present
           allocation_ranges:
