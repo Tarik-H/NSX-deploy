@@ -179,9 +179,9 @@
       # achieve_subresource_state_if_del_parent: "true"
       pool_static_subnets:      
         - do_wait_till_create: true
-          id: "TEP_subnet_192.168.100.0/23"
+          # id: "TEP_subnet_192.168.100.0/23"
           create_or_update_subresource_first: true
-          display_name: "TEP_subnet_192.168.100.0/23"
+          # display_name: "TEP_subnet_192.168.100.0/23"
           state: present
           allocation_ranges:
             - start: "192.168.100.2"
