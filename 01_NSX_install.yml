@@ -156,14 +156,16 @@
       username: "{{nsx_username}}"
       password: "{{nsx_password}}"
       validate_certs: False
-      display_name: "TEP_subnet_192.168.100.0/23"
+      display_name: "TEP_subnet_{{item|ipaddr('network')}}"
       state: "present"
       subnets:
         - allocation_ranges:
-            - start: "192.168.100.2"
-              end: "192.168.101.254"
-          cidr: "192.168.100.0/23"
-          gateway_ip: "192.168.100.1"          
+            - start: "{{item|ipaddr('2')|ipaddr('address')}}"
+              end: "{{item|ipaddr('-2')|ipaddr('address')}}"
+          cidr: "{{item|ipaddr('network/prefix')}}"
+          gateway_ip: "{{item|ipaddr('address')}}"
+    loop: "{{system_fabric.tep_pool_gws}}"
+    when: system_fabric.tep_pool_gws is defined          
     vars: 
       ansible_python_interpreter: /usr/bin/python3
 
@@ -191,12 +193,6 @@
   #     do_wait_till_create: true
   #   vars: 
   #     ansible_python_interpreter: /usr/bin/python3
-
-
-
-
-
-
 
 
 
