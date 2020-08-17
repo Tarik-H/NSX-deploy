@@ -156,7 +156,7 @@
       username: "{{nsx_username}}"
       password: "{{nsx_password}}"
       validate_certs: False
-      display_name: "TEP_subnet_{{item|ipaddr('network')}}"
+      display_name: "TEP_subnet_{{item|ipaddr('network/prefix')}}"
       state: "present"
       subnets:
         - allocation_ranges:
