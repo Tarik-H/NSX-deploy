@@ -88,10 +88,7 @@
   #   with_items:
   #     - Overlay
   #     - Vlan
-  #     - Edge-Vlan1
-  #     - Edge-Vlan2
-  #     - Edge-Vlan3
-  #     - Edge-Vlan4
+
 
 # This is a spot in case the Edges are nested inside compute transport node NVDS
   # - name: Create transport zone
@@ -112,35 +109,10 @@
   #   with_items:
   #     - Overlay
   #     - Vlan
-  #     - Edge-Vlan1
-  #     - Edge-Vlan2
-  #     - Edge-Vlan3
-  #     - Edge-Vlan4
-
-
-  # - name: create IP Pool
-  #   nsxt_policy_ip_pool:
-  #     hostname: "{{nsxt_ip}}"
-  #     username: "{{nsx_username}}"
-  #     password: "{{nsx_password}}"
-  #     validate_certs: False
-  #     id: NSX_TEP_POOL
-  #     display_name: NSX_TEP_POOL
-  #     state: "present"
-  #     create_or_update_subresource_first: true
-  #     do_wait_till_create: true
-  #     pool_static_subnets:
-  #       - id: "TEP_subnet_{{item|ipaddr('network')}}"
-  #         state: present
-  #         allocation_ranges:
-  #           - start: "{{item|ipaddr('2')|ipaddr('address')}}"
-  #             end: "{{item|ipaddr('-2')|ipaddr('address')}}"
-  #         cidr: "{{item|ipaddr('network/prefix')}}"
-  #         gateway_ip: "{{item|ipaddr('address')}}"
-  #   loop: "{{system_fabric.tep_pool_gws}}"
-  #   when: system_fabric.tep_pool_gws is defined
-  #   vars: 
-  #     ansible_python_interpreter: /usr/bin/python3
+  #     - Edge-1st-Vlan
+  #     - Edge-2nd-Vlan
+  #     - Edge-3rd-Vlan
+  #     - Edge-4th-Vlan
 
 
   # - name: View all compute managers
@@ -150,26 +122,26 @@
   #   when: system_fabric.tep_pool_gws is defined
 
 
-  - name: create IP Pool
-    nsxt_ip_pools:
-      hostname: "{{nsxt_ip}}"
-      username: "{{nsx_username}}"
-      password: "{{nsx_password}}"
-      validate_certs: False
-      display_name: "TEP_subnet_{{item|ipaddr('network/prefix')}}"
-      state: "present"
-      subnets:
-        - allocation_ranges:
-            - start: "{{item|ipaddr('2')|ipaddr('address')}}"
-              end: "{{item|ipaddr('-2')|ipaddr('address')}}"
-          cidr: "{{item|ipaddr('network/prefix')}}"
-          gateway_ip: "{{item|ipaddr('address')}}"
-    loop: "{{system_fabric.tep_pool_gws}}"
-    when: system_fabric.tep_pool_gws is defined          
-    vars: 
-      ansible_python_interpreter: /usr/bin/python3
-
   # - name: create IP Pool
+  #   nsxt_ip_pools:
+  #     hostname: "{{nsxt_ip}}"
+  #     username: "{{nsx_username}}"
+  #     password: "{{nsx_password}}"
+  #     validate_certs: False
+  #     display_name: "TEP_subnet_{{item|ipaddr('network/prefix')}}"
+  #     state: "present"
+  #     subnets:
+  #       - allocation_ranges:
+  #           - start: "{{item|ipaddr('2')|ipaddr('address')}}"
+  #             end: "{{item|ipaddr('-2')|ipaddr('address')}}"
+  #         cidr: "{{item|ipaddr('network/prefix')}}"
+  #         gateway_ip: "{{item|ipaddr('address')}}"
+  #   loop: "{{system_fabric.tep_pool_gws}}"
+  #   when: system_fabric.tep_pool_gws is defined          
+  #   vars: 
+  #     ansible_python_interpreter: /usr/bin/python3
+
+  # - name: create policy IP Pool
   #   nsxt_policy_ip_pool:
   #     hostname: "{{nsxt_ip}}"
   #     username: "{{nsx_username}}"
@@ -195,23 +167,30 @@
   #     ansible_python_interpreter: /usr/bin/python3
 
 
-
-  # - name: Create Uplink Profiles
-  #   nsxt_uplink_profiles:
-  #     hostname: "{{nsxt_ip}}"
-  #     username: "{{nsx_username}}"
-  #     password: "{{nsx_password}}"
-  #     validate_certs: False
-  #     display_name: "uplinkProfile1",
-  #     mtu: 1600
-  #     resource_type: "UplinkHostSwitchProfile"
-  #     teaming:
-  #       policy: FAILOVER_ORDER     
-  #       active_list:
-  #         - uplink_name: "uplink-1"
-  #           uplink_type: PNIC
-  #       standby_list:
-  #         - uplink_name: "uplink-1"
-  #           uplink_type: PNIC      
-  #     transport_vlan: 0,
-  #     state: "present"
+  - name: Create compute Uplink Profiles
+    nsxt_uplink_profiles:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      display_name: "UplinkProfl-compute-{{item['name']}}"
+      mtu: 1600
+      resource_type: "UplinkHostSwitchProfile"
+      teaming:
+        policy: "{{item['policy']}}"
+        active_list:
+{% for link in item['active-uplinks'] if item['active-uplinks'] %}
+          - uplink_name: "uplink-{{link}}"
+            uplink_type: PNIC
+{% endfor %}
+        standby_list:
+{% for link in item['standby-uplinks'] if item['standby-uplinks'] %}
+          - uplink_name: "uplink-{{link}}"
+            uplink_type: PNIC
+{% endfor %}       
+      transport_vlan: "{{overlay_vlan|default(0)}}"
+      state: "present"
+    loop:
+      - {"name": "actv-actv-4nics", "policy": "LOADBALANCE_SRCID", "active-uplinks": [1,2,3,4]}
+      - {"name": "actv-actv-2nics", "policy": "LOADBALANCE_SRCID", "active-uplinks": [1,2]}
+      - {"name": "actv-stdby-2nics", "policy": "FAILOVER_ORDER", "active-uplinks": [1,2]}      
