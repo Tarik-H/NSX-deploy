@@ -178,10 +178,9 @@
       resource_type: "UplinkHostSwitchProfile"
       teaming:
         policy: "{{item['policy']}}"
-        active_list: {% for link in item['active-uplinks'] if item['active-uplinks'] %}
-          - uplink_name: "uplink-{{link}}"
+        active_list:
+          - uplink_name: "uplink-{{item['active-uplinks']}}"
             uplink_type: PNIC
-        {% endfor %}
         standby_list:
       # {% for link in item['standby-uplinks'] if item['standby-uplinks'] %}
       #     - uplink_name: "uplink-{{link}}"
