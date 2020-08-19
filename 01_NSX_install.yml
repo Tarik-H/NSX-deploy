@@ -179,15 +179,15 @@
       teaming:
         policy: "{{item['policy']}}"
         active_list:
-{% for link in item['active-uplinks'] if item['active-uplinks'] %}
+      {% for link in item['active-uplinks'] if item['active-uplinks'] %}
           - uplink_name: "uplink-{{link}}"
             uplink_type: PNIC
-{% endfor %}
+      {% endfor %}
         standby_list:
-{% for link in item['standby-uplinks'] if item['standby-uplinks'] %}
+      {% for link in item['standby-uplinks'] if item['standby-uplinks'] %}
           - uplink_name: "uplink-{{link}}"
             uplink_type: PNIC
-{% endfor %}       
+      {% endfor %}       
       transport_vlan: "{{overlay_vlan|default(0)}}"
       state: "present"
     loop:
