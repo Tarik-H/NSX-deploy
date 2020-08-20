@@ -208,9 +208,10 @@
       teaming: "{{item.tm}}"
       transport_vlan: "{{overlay_vlan|default(0)}}"
       state: "present"
-    # loop: "{{uplinkprofs| subelements('active-uplinks', 'skip_missing=True')}}"
     loop:  
       - {"name": "actv-actv-4nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "uplink1", uplink_type: 'PNIC'},{uplink_name: "uplink2", uplink_type: 'PNIC'},{uplink_name: "uplink3", uplink_type: 'PNIC'},{uplink_name: "uplink4", uplink_type: 'PNIC'}]} }
+      - {"name": "actv-actv-2nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "uplink1", uplink_type: 'PNIC'},{uplink_name: "uplink2", uplink_type: 'PNIC'}]} }
+      - {"name": "actv-stdby-2nics", 'tm': {"policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "uplink1", uplink_type: 'PNIC'}], "standby_list": [{uplink_name: "uplink2", uplink_type: 'PNIC'}]} }
       # - {"name": "actv-actv-2nics", "policy": "LOADBALANCE_SRCID", "active-uplinks": [1,2] }
       # - {"name": "actv-stdby-2nics", "policy": "FAILOVER_ORDER", "active-uplinks": [1,2]}
 
