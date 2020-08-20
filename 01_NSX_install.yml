@@ -195,6 +195,7 @@
   #     state: "present"
   #   loop: "{{uplinkprofs| subelements('active-uplinks', 'skip_missing=True')}}"
 
+
   - name: Create compute Uplink Profiles
     nsxt_uplink_profiles:
       hostname: "{{nsxt_ip}}"
