@@ -195,27 +195,33 @@
   #     state: "present"
   #   loop: "{{uplinkprofs| subelements('active-uplinks', 'skip_missing=True')}}"
 
-  - name: Create compute Uplink Profiles
-    nsxt_uplink_profiles:
-      hostname: "{{nsxt_ip}}"
-      username: "{{nsx_username}}"
-      password: "{{nsx_password}}"
-      validate_certs: False
-      display_name: "UplinkProfl-compute"
-      mtu: 1600
-      resource_type: "UplinkHostSwitchProfile"
-      teaming:
-        policy: LOADBALANCE_SRCID
-        active_list:
-          - uplink_name: "uplink-{{item}}"
-            uplink_type: PNIC
-        standby_list:
-      # {% for link in item['standby-uplinks'] if item['standby-uplinks'] %}
-      #     - uplink_name: "uplink-{{link}}"
-      #       uplink_type: PNIC
-      # {% endfor %}       
-      transport_vlan: "{{overlay_vlan|default(0)}}"
-      state: "present"
-    # loop: "{{uplinkprofs| subelements('active-uplinks', 'skip_missing=True')}}"
-    loop:  
-      - "{{uplinkprofs['active-uplinks']}}"
+  # - name: Create compute Uplink Profiles
+  #   nsxt_uplink_profiles:
+  #     hostname: "{{nsxt_ip}}"
+  #     username: "{{nsx_username}}"
+  #     password: "{{nsx_password}}"
+  #     validate_certs: False
+  #     display_name: "UplinkProfl-compute"
+  #     mtu: 1600
+  #     resource_type: "UplinkHostSwitchProfile"
+  #     teaming:
+  #       policy: LOADBALANCE_SRCID
+  #       active_list:
+  #         - uplink_name: "uplink-{{item}}"
+  #           uplink_type: PNIC
+  #       standby_list:
+  #     # {% for link in item['standby-uplinks'] if item['standby-uplinks'] %}
+  #     #     - uplink_name: "uplink-{{link}}"
+  #     #       uplink_type: PNIC
+  #     # {% endfor %}       
+  #     transport_vlan: "{{overlay_vlan|default(0)}}"
+  #     state: "present"
+  #   # loop: "{{uplinkprofs| subelements('active-uplinks', 'skip_missing=True')}}"
+  #   loop:  
+  #     - "{{uplinkprofs['active-uplinks']}}"
+
+
+  - name: test
+    debug:
+      msg: "{{item}}"
+    loop: "{{uplinkprofs.active-uplinks}}"  
