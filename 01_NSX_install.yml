@@ -218,4 +218,4 @@
       state: "present"
     # loop: "{{uplinkprofs| subelements('active-uplinks', 'skip_missing=True')}}"
     loop:  
-      - "{{uplinkprofs.active-uplinks}}"
+      - "{{uplinkprofs['active-uplinks']}}"
