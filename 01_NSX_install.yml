@@ -223,5 +223,6 @@
 
   - name: test
     debug:
+      msg: "{{item.0}}"
       msg: "{{item.1}}"
     loop: "{{uplinkprofs| subelements('active-uplinks', 'skip_missing=True')}}"
