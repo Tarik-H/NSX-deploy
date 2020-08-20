@@ -207,7 +207,7 @@
       teaming:
         policy: LOADBALANCE_SRCID
         active_list:
-          - uplink_name: "uplink-{{item['active-uplinks']}}"
+          - uplink_name: "uplink-{{item}}"
             uplink_type: PNIC
         standby_list:
       # {% for link in item['standby-uplinks'] if item['standby-uplinks'] %}
@@ -217,4 +217,4 @@
       transport_vlan: "{{overlay_vlan|default(0)}}"
       state: "present"
     # loop: "{{uplinkprofs| subelements('active-uplinks', 'skip_missing=True')}}"
-    loop:  "{{uplinkprofs}}"
+    loop:  "{{uplinkprofs.active-uplinks}}"
