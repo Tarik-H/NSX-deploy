@@ -195,7 +195,7 @@
       state: "present"
     with_subelements:
       - "{{uplinkprofs}}"
-      - "{{active-uplinks}}"
+      - active-uplinks
 
     # loop:
     #   - {"name": "actv-actv-4nics", "policy": "LOADBALANCE_SRCID", "active-uplinks": [1,2,3,4]}
