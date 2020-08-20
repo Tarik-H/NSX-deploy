@@ -5,7 +5,7 @@
   gather_facts: no
   vars:
     uplinkprofs:
-      - {"name": "actv-actv-4nics", "policy": "LOADBALANCE_SRCID", "active-uplinks": [1,2,3,4] }
+      - {"name": "actv-actv-4nics", "policy": "LOADBALANCE_SRCID", "active-uplinks": [5.6.7] }
       # - {"name": "actv-actv-2nics", "policy": "LOADBALANCE_SRCID", "active-uplinks": [1,2] }
       # - {"name": "actv-stdby-2nics", "policy": "FAILOVER_ORDER", "active-uplinks": [1,2]}
 
