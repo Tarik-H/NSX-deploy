@@ -3,6 +3,11 @@
   hosts: localhost
   connection: local
   gather_facts: no
+  vars:
+    uplinkprofs:
+      - {"name": "actv-actv-4nics", "policy": "LOADBALANCE_SRCID", "active-uplinks": [1,2,3,4]}
+      - {"name": "actv-actv-2nics", "policy": "LOADBALANCE_SRCID", "active-uplinks": [1,2]}
+      # - {"name": "actv-stdby-2nics", "policy": "FAILOVER_ORDER", "active-uplinks": [1,2]}
 
   tasks:
 
@@ -173,13 +178,13 @@
       username: "{{nsx_username}}"
       password: "{{nsx_password}}"
       validate_certs: False
-      display_name: "UplinkProfl-compute-{{item['name']}}"
+      display_name: "UplinkProfl-compute-{{item.0.name}}"
       mtu: 1600
       resource_type: "UplinkHostSwitchProfile"
       teaming:
-        policy: "{{item['policy']}}"
+        policy: "{{item.0.policy}}"
         active_list:
-          - uplink_name: "uplink-{{item['active-uplinks']}}"
+          - uplink_name: "uplink-{{item.1}}"
             uplink_type: PNIC
         standby_list:
       # {% for link in item['standby-uplinks'] if item['standby-uplinks'] %}
@@ -188,7 +193,11 @@
       # {% endfor %}       
       transport_vlan: "{{overlay_vlan|default(0)}}"
       state: "present"
-    loop:
-      - {"name": "actv-actv-4nics", "policy": "LOADBALANCE_SRCID", "active-uplinks": [1,2,3,4]}
-      - {"name": "actv-actv-2nics", "policy": "LOADBALANCE_SRCID", "active-uplinks": [1,2]}
-      # - {"name": "actv-stdby-2nics", "policy": "FAILOVER_ORDER", "active-uplinks": [1,2]}
+    with_subelements:
+      - "{{uplinkprofs}}"
+      - "{{active-uplinks}}"
+
+    # loop:
+    #   - {"name": "actv-actv-4nics", "policy": "LOADBALANCE_SRCID", "active-uplinks": [1,2,3,4]}
+    #   - {"name": "actv-actv-2nics", "policy": "LOADBALANCE_SRCID", "active-uplinks": [1,2]}
+    #   - {"name": "actv-stdby-2nics", "policy": "FAILOVER_ORDER", "active-uplinks": [1,2]}
