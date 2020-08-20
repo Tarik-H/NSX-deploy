@@ -223,5 +223,5 @@
 
   - name: test
     debug:
-      msg: "{{item.items().active-uplinks}}"
-    with_items: "{{uplinkprofs}}"
+      msg: "{{item.1}}"
+    loop: "{{uplinkprofs| subelements('active-uplinks', 'skip_missing=True')}}"
