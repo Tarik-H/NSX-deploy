@@ -204,21 +204,21 @@
       display_name: "UplinkProfl-compute"
       mtu: 1600
       resource_type: "UplinkHostSwitchProfile"
-      teaming:
-        policy: LOADBALANCE_SRCID
-        active_list:
-          - uplink_name: "uplink-{{item.1}}"
-            uplink_type: PNIC
-        standby_list:
-      # {% for link in item['standby-uplinks'] if item['standby-uplinks'] %}
-      #     - uplink_name: "uplink-{{link}}"
+      teaming: {policy: LOADBALANCE_SRCID, active_list: [{uplink_name: "uplink1", uplink_type: PNIC}, {uplink_name: "uplink2", uplink_type: PNIC}] }
+      #   policy: LOADBALANCE_SRCID
+      #   active_list:
+      #     - uplink_name: "uplink-{{item.1}}"
       #       uplink_type: PNIC
-      # {% endfor %}       
+      #   standby_list:
+      # # {% for link in item['standby-uplinks'] if item['standby-uplinks'] %}
+      # #     - uplink_name: "uplink-{{link}}"
+      # #       uplink_type: PNIC
+      # # {% endfor %}       
       transport_vlan: "{{overlay_vlan|default(0)}}"
       state: "present"
-    loop: "{{uplinkprofs| subelements('active-uplinks', 'skip_missing=True')}}"
-    # loop:  
-    #   - "{{uplinkprofs['active-uplinks']}}"
+    # loop: "{{uplinkprofs| subelements('active-uplinks', 'skip_missing=True')}}"
+    # # loop:  
+    # #   - "{{uplinkprofs['active-uplinks']}}"
 
 
   # - name: test
