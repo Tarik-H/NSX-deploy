@@ -224,4 +224,4 @@
   - name: test
     debug:
       msg: "{{item}}"
-    loop: "{{uplinkprofs['active-uplinks']}}"
+    loop: "{{uplinkprofs['policy']}}"
