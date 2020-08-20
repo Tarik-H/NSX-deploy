@@ -206,7 +206,7 @@
       mtu: 1600
       resource_type: "UplinkHostSwitchProfile"
       teaming: 
-      teaming:  {policy: "{{item.policy}", active_list: [{% for link in item.active-uplinks if item.active-uplinks%}{%if not loop.last%}{uplink_name: "uplink{{link}}", uplink_type: PNIC},{%else%}{uplink_name: "uplink{{link}}", uplink_type: PNIC}{%endif%}  {%endfor%}] }
+      teaming:  {policy: "{{item.policy}", active_list: [{% for link in item.active-uplinks if item.active-uplinks %}{% if not loop.last %}{uplink_name: "uplink-{{link}}", uplink_type: 'PNIC'},{% elif loop.last %}{uplink_name: "uplink-{{link}}", uplink_type: 'PNIC'}{% endif %}  {%endfor%}] }
       #   policy: LOADBALANCE_SRCID
       #   active_list:
       #     - uplink_name: "uplink-{{item.1}}"
