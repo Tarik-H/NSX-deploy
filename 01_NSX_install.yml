@@ -224,4 +224,4 @@
   - name: test
     debug:
       msg: "{{item}}"
-    loop: "{{uplinkprofs}}"
+    with_items: "{{uplinkprofs.active-uplinks}}"
