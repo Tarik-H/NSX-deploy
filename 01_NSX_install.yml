@@ -172,19 +172,42 @@
   #     ansible_python_interpreter: /usr/bin/python3
 
 
+  # - name: Create compute Uplink Profiles
+  #   nsxt_uplink_profiles:
+  #     hostname: "{{nsxt_ip}}"
+  #     username: "{{nsx_username}}"
+  #     password: "{{nsx_password}}"
+  #     validate_certs: False
+  #     display_name: "UplinkProfl-compute-{{item.0.name}}"
+  #     mtu: 1600
+  #     resource_type: "UplinkHostSwitchProfile"
+  #     teaming:
+  #       policy: "{{item.0.policy}}"
+  #       active_list:
+  #         - uplink_name: "uplink-{{item.1}}"
+  #           uplink_type: PNIC
+  #       standby_list:
+  #     # {% for link in item['standby-uplinks'] if item['standby-uplinks'] %}
+  #     #     - uplink_name: "uplink-{{link}}"
+  #     #       uplink_type: PNIC
+  #     # {% endfor %}       
+  #     transport_vlan: "{{overlay_vlan|default(0)}}"
+  #     state: "present"
+  #   loop: "{{uplinkprofs| subelements('active-uplinks', 'skip_missing=True')}}"
+
   - name: Create compute Uplink Profiles
     nsxt_uplink_profiles:
       hostname: "{{nsxt_ip}}"
       username: "{{nsx_username}}"
       password: "{{nsx_password}}"
       validate_certs: False
-      display_name: "UplinkProfl-compute-{{item.0.name}}"
+      display_name: "UplinkProfl-compute"
       mtu: 1600
       resource_type: "UplinkHostSwitchProfile"
       teaming:
-        policy: "{{item.0.policy}}"
+        policy: LOADBALANCE_SRCID
         active_list:
-          - uplink_name: "uplink-{{item.1}}"
+          - uplink_name: "uplink-{{item.active-uplinks}}"
             uplink_type: PNIC
         standby_list:
       # {% for link in item['standby-uplinks'] if item['standby-uplinks'] %}
@@ -193,9 +216,6 @@
       # {% endfor %}       
       transport_vlan: "{{overlay_vlan|default(0)}}"
       state: "present"
-    loop: "{{uplinkprofs| subelements('active-uplinks', 'skip_missing=True')}}"
-
-    # loop:
-    #   - {"name": "actv-actv-4nics", "policy": "LOADBALANCE_SRCID", "active-uplinks": [1,2,3,4]}
-    #   - {"name": "actv-actv-2nics", "policy": "LOADBALANCE_SRCID", "active-uplinks": [1,2]}
-    #   - {"name": "actv-stdby-2nics", "policy": "FAILOVER_ORDER", "active-uplinks": [1,2]}
+    # loop: "{{uplinkprofs| subelements('active-uplinks', 'skip_missing=True')}}"
+    loop:
+      - "{{uplinkprofs}}"
