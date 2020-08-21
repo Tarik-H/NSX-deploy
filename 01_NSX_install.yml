@@ -196,13 +196,13 @@
   #   loop: "{{uplinkprofs| subelements('active-uplinks', 'skip_missing=True')}}"
 
 
-  - name: Create compute Uplink Profiles
+  - name: Create static compute/edge TEP Uplink Profiles
     nsxt_uplink_profiles:
       hostname: "{{nsxt_ip}}"
       username: "{{nsx_username}}"
       password: "{{nsx_password}}"
       validate_certs: False
-      display_name: "UplinkProfl-compute-{{item.name}}"
+      display_name: "UplinkProfl-{{item.name}}"
       mtu: 1600
       resource_type: "UplinkHostSwitchProfile"
       state: "present"
@@ -210,13 +210,11 @@
       transport_vlan: "{{overlay_vlan|default(0)}}"
       named_teamings: "{{item.ntm|default(omit)}}"
     loop:  
-      - {"name": "actv-actv-4nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "uplink1", uplink_type: 'PNIC'},{uplink_name: "uplink2", uplink_type: 'PNIC'},{uplink_name: "uplink3", uplink_type: 'PNIC'},{uplink_name: "uplink4", uplink_type: 'PNIC'}]} }
-      - {"name": "actv-actv-2nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "uplink1", uplink_type: 'PNIC'},{uplink_name: "uplink2", uplink_type: 'PNIC'}]} }
-      - {"name": "actv-stdby-2nics", 'tm': {"policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "uplink1", uplink_type: 'PNIC'}], "standby_list": [{uplink_name: "uplink2", uplink_type: 'PNIC'}]} }
-      # - {"name": "actv-actv-2nics", "policy": "LOADBALANCE_SRCID", "active-uplinks": [1,2] }
-      # - {"name": "actv-stdby-2nics", "policy": "FAILOVER_ORDER", "active-uplinks": [1,2]}
-
-
+      - {"name": "compute-actv-actv-4nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "uplink1", uplink_type: 'PNIC'},{uplink_name: "uplink2", uplink_type: 'PNIC'},{uplink_name: "uplink3", uplink_type: 'PNIC'},{uplink_name: "uplink4", uplink_type: 'PNIC'}]} }
+      - {"name": "compute-actv-actv-2nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "uplink1", uplink_type: 'PNIC'},{uplink_name: "uplink2", uplink_type: 'PNIC'}]} }
+      - {"name": "compute-actv-stdby-2nics", 'tm': {"policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "uplink1", uplink_type: 'PNIC'}], "standby_list": [{uplink_name: "uplink2", uplink_type: 'PNIC'}]} }
+      - {"name": "edge-multi-TEP-2nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "edg-uplink1", uplink_type: 'PNIC'},{uplink_name: "edg-uplink2", uplink_type: 'PNIC'}]} }
+      - {"name": "edge-single-TEP-2nics", 'tm': {"policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "edg-uplink1", uplink_type: 'PNIC'}],"standby_list": [{uplink_name: "edg-uplink2", uplink_type: 'PNIC'}]} }
   # - name: test
   #   debug:
   #     msg: "{{item.0}}"
