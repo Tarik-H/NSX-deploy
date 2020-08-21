@@ -206,7 +206,7 @@
       mtu: 1600
       resource_type: "UplinkHostSwitchProfile"
       state: "present"      
-      send_enabled: yes
+      send_enabled: "True"
       teaming: "{{item.tm}}"
       transport_vlan: "{{overlay_vlan|default(0)}}"
       named_teamings: "{{item.ntm|default(omit)}}"
