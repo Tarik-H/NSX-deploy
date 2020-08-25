@@ -146,30 +146,29 @@
   #   vars: 
   #     ansible_python_interpreter: /usr/bin/python3
 
-  # - name: create policy IP Pool
-  #   nsxt_policy_ip_pool:
-  #     hostname: "{{nsxt_ip}}"
-  #     username: "{{nsx_username}}"
-  #     password: "{{nsx_password}}"
-  #     validate_certs: False
-  #     id: NSX_TEP_POOL
-  #     display_name: NSX_TEP_POOL
-  #     state: "present"
-  #     pool_static_subnets:      
-  #       - 
-  #         id: "TEP_subnet_192.168.100.0/23"
-  #         # display_name: "TEP_subnet_192.168.100.0/23"
-  #         state: present
-  #         allocation_ranges:
-  #           - start: "192.168.100.2"
-  #             end: "192.168.101.254"
-  #         cidr: "192.168.100.0/23"
-  #         gateway_ip: "192.168.100.1"
-  #     create_or_update_subresource_first: true
-  #     # achieve_subresource_state_if_del_parent: true
-  #     do_wait_till_create: true
-  #   vars: 
-  #     ansible_python_interpreter: /usr/bin/python3
+  - name: create policy IP Pool
+    nsxt_policy_ip_pool:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      id: NSX_TEP_POOL
+      display_name: NSX_TEP_POOL
+      state: "present"
+      pool_static_subnets:      
+        - 
+          display_name: "TEP_subnet_192.168.90.0/23"
+          state: present
+          allocation_ranges:
+            - start: "192.168.90.2"
+              end: "192.168.91.254"
+          cidr: "192.168.90.0/23"
+          gateway_ip: "192.168.90.1"
+      create_or_update_subresource_first: true
+      # achieve_subresource_state_if_del_parent: true
+      do_wait_till_create: true
+    vars: 
+      ansible_python_interpreter: /usr/bin/python3
 
 
   # - name: Create compute Uplink Profiles
@@ -203,18 +202,19 @@
       password: "{{nsx_password}}"
       validate_certs: False
       display_name: "UplinkProfl-{{item.name}}"
-      mtu: 1600
+      # mtu: 1600
       resource_type: "UplinkHostSwitchProfile"
       state: "present"
       teaming: "{{item.tm}}"
       transport_vlan: "{{overlay_vlan|default(0)}}"
       named_teamings: "{{item.ntm|default(omit)}}"
     loop:  
-      - {"name": "compute-actv-actv-4nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "uplink1", uplink_type: 'PNIC'},{uplink_name: "uplink2", uplink_type: 'PNIC'},{uplink_name: "uplink3", uplink_type: 'PNIC'},{uplink_name: "uplink4", uplink_type: 'PNIC'}]} }
-      - {"name": "compute-actv-actv-2nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "uplink1", uplink_type: 'PNIC'},{uplink_name: "uplink2", uplink_type: 'PNIC'}]} }
-      - {"name": "compute-actv-stdby-2nics", 'tm': {"policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "uplink1", uplink_type: 'PNIC'}], "standby_list": [{uplink_name: "uplink2", uplink_type: 'PNIC'}]} }
-      - {"name": "edge-multi-TEP-2nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "edg-uplink1", uplink_type: 'PNIC'},{uplink_name: "edg-uplink2", uplink_type: 'PNIC'}]} }
-      - {"name": "edge-single-TEP-2nics", 'tm': {"policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "edg-uplink1", uplink_type: 'PNIC'}],"standby_list": [{uplink_name: "edg-uplink2", uplink_type: 'PNIC'}]} }
+      - {"name": "compute-actv-actv-4nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "UPLINK1", uplink_type: 'PNIC'},{uplink_name: "UPLINK2", uplink_type: 'PNIC'},{uplink_name: "UPLINK3", uplink_type: 'PNIC'},{uplink_name: "UPLINK4", uplink_type: 'PNIC'}]} }
+      - {"name": "compute-actv-actv-2nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "UPLINK1", uplink_type: 'PNIC'},{uplink_name: "UPLINK2", uplink_type: 'PNIC'}]} }
+      - {"name": "compute-actv-stdby-2nics", 'tm': {"policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "UPLINK1", uplink_type: 'PNIC'}], "standby_list": [{uplink_name: "UPLINK2", uplink_type: 'PNIC'}]} }
+      - {"name": "compute-actv-stdby-1nic", 'tm': {"policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "UPLINK1", uplink_type: 'PNIC'}], "standby_list": [{uplink_name: "UPLINK2", uplink_type: 'PNIC'}]} }
+      - {"name": "edge-multi-TEP-2nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: 'PNIC'},{uplink_name: "EDG-UPLINK2", uplink_type: 'PNIC'}]} }
+      - {"name": "edge-single-TEP-2nics", 'tm': {"policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: 'PNIC'}],"standby_list": [{uplink_name: "EDG-UPLINK2", uplink_type: 'PNIC'}]} }
   # - name: test
   #   debug:
   #     msg: "{{item.0}}"
