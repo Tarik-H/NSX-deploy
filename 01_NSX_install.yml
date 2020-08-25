@@ -167,7 +167,7 @@
               "end": "{{item|ipaddr('-2')|ipaddr('address')}}"
             }
           ],
-          "gateway_ip": "{{item|ipaddr('address')}}"
+          "gateway_ip": "{{item|ipaddr('address')}}",
           "cidr": "{{item|ipaddr('network/prefix')}}"
         }
        ]
