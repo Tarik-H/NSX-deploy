@@ -159,7 +159,7 @@
       pool_static_subnets:      
         [
         {
-          "display_name": "TEP_subnet_{{item|ipaddr('network/prefix')}}",
+          "display_name": "TEP_subnet_{{item|ipaddr('network')}}",
           "state": "present",
           "allocation_ranges": [
             {
