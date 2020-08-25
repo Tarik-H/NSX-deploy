@@ -146,6 +146,30 @@
   #   vars: 
   #     ansible_python_interpreter: /usr/bin/python3
 
+  # - name: create policy IP Pool
+  #   nsxt_policy_ip_pool:
+  #     hostname: "{{nsxt_ip}}"
+  #     username: "{{nsx_username}}"
+  #     password: "{{nsx_password}}"
+  #     validate_certs: False
+  #     id: NSX_TEP_POOL
+  #     display_name: NSX_TEP_POOL
+  #     state: "present"
+  #     pool_static_subnets:      
+  #       - 
+  #         display_name: "TEP_subnet_192.168.90.0/23"
+  #         state: present
+  #         allocation_ranges:
+  #           - start: "192.168.90.2"
+  #             end: "192.168.91.254"
+  #         cidr: "192.168.90.0/23"
+  #         gateway_ip: "192.168.90.1"
+  #     create_or_update_subresource_first: true
+  #     # achieve_subresource_state_if_del_parent: true
+  #     do_wait_till_create: true
+  #   vars: 
+  #     ansible_python_interpreter: /usr/bin/python3
+
   - name: create policy IP Pool
     nsxt_policy_ip_pool:
       hostname: "{{nsxt_ip}}"
@@ -156,19 +180,24 @@
       display_name: NSX_TEP_POOL
       state: "present"
       pool_static_subnets:      
-        - 
-          display_name: "TEP_subnet_192.168.90.0/23"
-          state: present
-          allocation_ranges:
-            - start: "192.168.90.2"
-              end: "192.168.91.254"
-          cidr: "192.168.90.0/23"
-          gateway_ip: "192.168.90.1"
-      create_or_update_subresource_first: true
-      # achieve_subresource_state_if_del_parent: true
-      do_wait_till_create: true
+        [
+        {
+          "display_name": "TEP_ip_pool_subnet",
+          "state": "present",
+          "allocation_ranges": [
+            {
+              "start": "172.16.227.50",
+              "end": "172.16.227.59"
+            }
+          ],
+          "gateway_ip": "172.16.227.1",
+          "cidr": "172.16.227.0/24"
+        }
+       ]
     vars: 
       ansible_python_interpreter: /usr/bin/python3
+
+
 
 
   # - name: Create compute Uplink Profiles
