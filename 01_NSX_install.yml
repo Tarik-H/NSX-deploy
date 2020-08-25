@@ -25,16 +25,16 @@
       path: ./data/fragments
       state: directory
 
-  - name: Copy & prepare the uploaded input Excel file
-    copy:
-      src: "{{nsx_filepath}}/"
-      dest: "./data/{{nsx_filename}}"
+  # - name: Copy & prepare the uploaded input Excel file
+  #   copy:
+  #     src: "{{nsx_filepath}}/"
+  #     dest: "./data/{{nsx_filename}}"
 
-  - name: Initialize the excel file to use the input data
-    xls_to_facts:
-      src: "./data/{{nsx_filename}}"
-    tags:
-      - excel
+  # - name: Initialize the excel file to use the input data
+  #   xls_to_facts:
+  #     src: "./data/{{nsx_filename}}"
+  #   tags:
+  #     - excel
 
   - name: Create system fabric model from spreadsheet data
     template:
