@@ -30,7 +30,6 @@ e.g. 172.31.12.1/25 or 192.168.10.254/24]]></description>
         <option name='Overlay-vlan' regex='^[0-9]{1,4}$' value='0'>
           <description>Enter infra overlay Vlan id [0 - 4096]</description>
         </option>
-        <option enforcedvalues='true' name='toto' valuesUrl='https://geoservices.tamu.edu/Services/Geocode/WebService/GeocoderWebServiceHttpNonParsed_V04_01.aspx?streetAddress=9355%20Burton%20Way&amp;city=Beverly%20Hills&amp;state=ca&amp;zip=90210&amp;apikey=demo&amp;format=XML&amp;census=false&amp;notStore=false&amp;version=4.01' />
       </options>
     </context>
     <defaultTab>nodes</defaultTab>
