@@ -33,7 +33,7 @@ system_fabric:
 
   compute_transp_nodes:
 {% for i in fabric if ((i.Node_type == 'vsphere_cluster' or i.Node_type == 'single_esxi_host') and i.vcenter_ip and i.Uplink_profile) %}
-    - { vcenter: "vCenter_{{i.vcenter_ip}}"{%if i.Node_name and (i.Node_type|lower == 'vsphere_cluster')%}, cluster_name: "{{i.Node_name}}", transport_node_profile_name: "TranspNodeProfl-cluster-{{i.Node_name}}"{%elif i.Node_ip and i.Node_type == 'single_esxi_host'%}, node_ip: "{{i.Node_ip|ipaddr}}", {%endif%},  switch_type: {%if i.NVDS_type|lower == 'vds 7'%}'VDS'{%else%}'NVDS'{%endif%}, TZ: ['TZ_overlay','TZ_Vlan'], uplink_profile: "{{i.Uplink_profile}}",  static_ip_assign: "NSX_TEP_POOL"{% for k, v in i.iteritems() if k is none %}'success'{%endfor%}   }
+    - { vcenter: "vCenter_{{i.vcenter_ip}}"{%if i.Node_name and (i.Node_type|lower == 'vsphere_cluster')%}, cluster_name: "{{i.Node_name}}", transport_node_profile_name: "TranspNodeProfl-cluster-{{i.Node_name}}"{%elif i.Node_ip and i.Node_type == 'single_esxi_host'%}, node_ip: "{{i.Node_ip|ipaddr}}", {%endif%},  switch_type: {%if i.NVDS_type|lower == 'vds 7'%}'VDS'{%else%}'NVDS'{%endif%}, TZ: ['TZ_overlay','TZ_Vlan'], uplink_profile: "{{i.Uplink_profile}}",  static_ip_assign: "NSX_TEP_POOL"{% for k, v in i.iteritems() if k and 'UPLINK' in k %},[{{k}}: {{v}}]{%endfor%}   }
 {% endfor %}
 
 
