@@ -48,51 +48,51 @@
       src: "./data/fragments/"
       dest: "./data/system_fabric.yml"
 
-  # - name: load data
-  #   include_vars:
-  #     file: "./data/system_fabric.yml"
+  - name: load data
+    include_vars:
+      file: "./data/system_fabric.yml"
 
-  # - name: Provision list of compute managers
-  #   nsxt_fabric_compute_managers:
-  #     hostname: "{{nsxt_ip}}"
-  #     username: "{{nsx_username}}"
-  #     password: "{{nsx_password}}"
-  #     validate_certs: False
-  #     display_name: "vCenter_{{item}}"
-  #     server: "{{item}}"
-  #     description: "vCenter_{{item}}"
-  #     origin_type: vCenter
-  #     credential:
-  #       credential_type: "UsernamePasswordLoginCredential"
-  #       username: "{{vcenter_user}}"
-  #       password: "{{vcenter_pass}}"
-  #     state: present
-  #   register: cpu_mgr
-  #   with_items: "{{system_fabric.vcenters_list}}"
-  #   when: system_fabric.vcenters_list is defined
+#   - name: Provision list of compute managers
+#     nsxt_fabric_compute_managers:
+#       hostname: "{{nsxt_ip}}"
+#       username: "{{nsx_username}}"
+#       password: "{{nsx_password}}"
+#       validate_certs: False
+#       display_name: "vCenter_{{item}}"
+#       server: "{{item}}"
+#       description: "vCenter_{{item}}"
+#       origin_type: vCenter
+#       credential:
+#         credential_type: "UsernamePasswordLoginCredential"
+#         username: "{{vcenter_user}}"
+#         password: "{{vcenter_pass}}"
+#       state: present
+#     register: cpu_mgr
+#     with_items: "{{system_fabric.vcenters_list}}"
+#     when: system_fabric.vcenters_list is defined
 
-  # - name: View all compute managers
-  #   debug:
-  #     msg: "{{cpu_mgr}}"
+#   - name: View all compute managers
+#     debug:
+#       msg: "{{cpu_mgr}}"
 
-  # - name: Create transport zone
-  #   nsxt_transport_zones:
-  #     hostname: "{{nsxt_ip}}"
-  #     username: "{{nsx_username}}"
-  #     password: "{{nsx_password}}"
-  #     validate_certs: False
-  #     resource_type: "TransportZone"
-  #     display_name: "TZ_{{item}}"
-  #     host_switch_mode: "STANDARD"
-  #     description: "NSX configured {{item}} Transport Zone"
-  #     transport_type: "{%if 'Overlay' in item%}OVERLAY{%elif 'Vlan' in item%}VLAN{%endif%}"
-  #     is_default: "false"
-  #     nested_nsx: "false"
-  #     host_switch_name: "NSXT-NVDS"
-  #     state: "present"
-  #   with_items:
-  #     - Overlay
-  #     - Vlan
+#   - name: Create transport zone
+#     nsxt_transport_zones:
+#       hostname: "{{nsxt_ip}}"
+#       username: "{{nsx_username}}"
+#       password: "{{nsx_password}}"
+#       validate_certs: False
+#       resource_type: "TransportZone"
+#       display_name: "TZ_{{item}}"
+#       host_switch_mode: "STANDARD"
+#       description: "NSX configured {{item}} Transport Zone"
+#       transport_type: "{%if 'Overlay' in item%}OVERLAY{%elif 'Vlan' in item%}VLAN{%endif%}"
+#       is_default: "false"
+#       nested_nsx: "false"
+#       host_switch_name: "NSXT-NVDS"
+#       state: "present"
+#     with_items:
+#       - Overlay
+#       - Vlan
 
 
 # # This is a spot in case the Edges are nested inside compute transport node NVDS
@@ -182,29 +182,80 @@
 
 
 
-  # - name: Create static compute/edge TEP Uplink Profiles
-  #   nsxt_uplink_profiles:
+#   - name: Create static compute/edge TEP Uplink Profiles
+#     nsxt_uplink_profiles:
+#       hostname: "{{nsxt_ip}}"
+#       username: "{{nsx_username}}"
+#       password: "{{nsx_password}}"
+#       validate_certs: False
+#       display_name: "UplinkProfl-{{item.name}}"
+#       # mtu: 1600
+#       resource_type: "UplinkHostSwitchProfile"
+#       state: "present"
+#       teaming: "{{item.tm}}"
+#       transport_vlan: "{{overlay_vlan|default(0)}}"
+#       named_teamings: "{{item.ntm|default(omit)}}"
+#     loop:  
+#       - {"name": "compute-actv-actv-4nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "UPLINK1", uplink_type: 'PNIC'},{uplink_name: "UPLINK2", uplink_type: 'PNIC'},{uplink_name: "UPLINK3", uplink_type: 'PNIC'},{uplink_name: "UPLINK4", uplink_type: 'PNIC'}]} }
+#       - {"name": "compute-actv-actv-6nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "UPLINK1", uplink_type: 'PNIC'},{uplink_name: "UPLINK2", uplink_type: 'PNIC'},{uplink_name: "UPLINK3", uplink_type: 'PNIC'},{uplink_name: "UPLINK4", uplink_type: 'PNIC'},{uplink_name: "UPLINK5", uplink_type: 'PNIC'},{uplink_name: "UPLINK6", uplink_type: 'PNIC'}]} }
+#       - {"name": "compute-actv-actv-2nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "UPLINK1", uplink_type: 'PNIC'},{uplink_name: "UPLINK2", uplink_type: 'PNIC'}]} }
+#       - {"name": "compute-actv-stdby-2nics", 'tm': {"policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "UPLINK1", uplink_type: 'PNIC'}], "standby_list": [{uplink_name: "UPLINK2", uplink_type: 'PNIC'}]} }
+#       - {"name": "compute-actv-stdby-1nic", 'tm': {"policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "UPLINK1", uplink_type: 'PNIC'}] } }
+#       - {"name": "edge-multi-TEP-2nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: 'PNIC'},{uplink_name: "EDG-UPLINK2", uplink_type: 'PNIC'}]} }
+#       - {"name": "edge-single-TEP-2nics", 'tm': {"policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: 'PNIC'}],"standby_list": [{uplink_name: "EDG-UPLINK2", uplink_type: 'PNIC'}]} }
+#   # - name: test
+#   #   debug:
+#   #     msg: "{{item.0}}"
+#   #     msg: "{{item.1}}"
+#   #   loop: "{{uplinkprofs| subelements('active-uplinks', 'skip_missing=True')}}"
+
+
+  # - name: Create NSX-T 2.5 transport node profile 
+  #   nsxt_transport_node_profiles:
   #     hostname: "{{nsxt_ip}}"
   #     username: "{{nsx_username}}"
   #     password: "{{nsx_password}}"
   #     validate_certs: False
-  #     display_name: "UplinkProfl-{{item.name}}"
-  #     # mtu: 1600
-  #     resource_type: "UplinkHostSwitchProfile"
-  #     state: "present"
-  #     teaming: "{{item.tm}}"
-  #     transport_vlan: "{{overlay_vlan|default(0)}}"
-  #     named_teamings: "{{item.ntm|default(omit)}}"
-  #   loop:  
-  #     - {"name": "compute-actv-actv-4nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "UPLINK1", uplink_type: 'PNIC'},{uplink_name: "UPLINK2", uplink_type: 'PNIC'},{uplink_name: "UPLINK3", uplink_type: 'PNIC'},{uplink_name: "UPLINK4", uplink_type: 'PNIC'}]} }
-  #     - {"name": "compute-actv-actv-6nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "UPLINK1", uplink_type: 'PNIC'},{uplink_name: "UPLINK2", uplink_type: 'PNIC'},{uplink_name: "UPLINK3", uplink_type: 'PNIC'},{uplink_name: "UPLINK4", uplink_type: 'PNIC'},{uplink_name: "UPLINK5", uplink_type: 'PNIC'},{uplink_name: "UPLINK6", uplink_type: 'PNIC'}]} }
-  #     - {"name": "compute-actv-actv-2nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "UPLINK1", uplink_type: 'PNIC'},{uplink_name: "UPLINK2", uplink_type: 'PNIC'}]} }
-  #     - {"name": "compute-actv-stdby-2nics", 'tm': {"policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "UPLINK1", uplink_type: 'PNIC'}], "standby_list": [{uplink_name: "UPLINK2", uplink_type: 'PNIC'}]} }
-  #     - {"name": "compute-actv-stdby-1nic", 'tm': {"policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "UPLINK1", uplink_type: 'PNIC'}] } }
-  #     - {"name": "edge-multi-TEP-2nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: 'PNIC'},{uplink_name: "EDG-UPLINK2", uplink_type: 'PNIC'}]} }
-  #     - {"name": "edge-single-TEP-2nics", 'tm': {"policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: 'PNIC'}],"standby_list": [{uplink_name: "EDG-UPLINK2", uplink_type: 'PNIC'}]} }
-  # # - name: test
-  # #   debug:
-  # #     msg: "{{item.0}}"
-  # #     msg: "{{item.1}}"
-  # #   loop: "{{uplinkprofs| subelements('active-uplinks', 'skip_missing=True')}}"
+  #     resource_type: TransportNodeProfile
+  #     display_name: "{{ item[0].transport_node_profile_name }}"
+  #     description: "Transport Node Profile {{ item[0].transport_node_profile_name }}"
+  #     host_switch_spec:
+  #       resource_type: StandardHostSwitchSpec
+  #       host_switches:
+  #       - host_switch_profiles:
+  #         - name: "{{item[0].uplink_profile}}"
+  #           type: "UplinkHostSwitchProfile"
+  #         - name: LLDP [Send Packet Enabled]
+  #           type: LldpHostSwitchProfile
+  #         - name: nsx-default-nioc-hostswitch-profile
+  #           type: NiocProfile                      
+  #         host_switch_name: "NSXT-NVDS"
+  #         host_switch_mode: "STANDARD"
+  #         pnics:
+  #         - device_name: "item[1]"
+  #           uplink_name: "uplink-1"
+  #         ip_assignment_spec:
+  #           resource_type: "StaticIpPoolSpec"
+  #           ip_pool_name: "IPPool-IPV4-1"
+  #         vmk_install_migration:
+  #         - device_name: vmk0
+  #           destination_network_name: "ls_vmk_Mgmt"
+  #     transport_zone_endpoints:
+  #     - transport_zone_name: "TZ_Overlay"
+  #     - transport_zone_name: "TZ_Vlan"
+  #     state: present
+  #   with_subelements:
+  #     - "{{ system_fabric.compute_transp_nodes}}"
+  #     - "{{ lookup('dict', users) }}"
+  #   when:
+  #     - compute_transp_nodes is defined and 
+  #     - nsxt_major_version == 2  
+
+
+  - name: Test variables
+    debug:
+      msg:   -  "{{item.1.key}}: {{item.1.value}}" 
+    with_subelements:
+      - "{{ system_fabric.compute_transp_nodes}}"
+      - "{{ lookup('dict', userssystem_fabric.compute_transp_nodes.pnics) }}"
+    when: item.0.switch_type == 'NVDS'    
