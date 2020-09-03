@@ -257,5 +257,6 @@
       msg:  "- {{item.1.key}}: {{item.1.value}}" 
     with_subelements:
       - "{{ system_fabric.compute_transp_nodes}}"
-      - "{{ lookup('dict', userssystem_fabric.compute_transp_nodes.pnics) }}"
+      - "{{ system_fabric.compute_transp_nodes.pnics}}"      
+      # - "{{ lookup('dict', userssystem_fabric.compute_transp_nodes.pnics) }}"
     when: item.0.switch_type == 'NVDS'    
