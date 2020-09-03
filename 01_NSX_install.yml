@@ -255,8 +255,8 @@
   - name: Test variables
     debug:
       msg:  "- {{item.1.key}}: {{item.1.value}}" 
-    with_nested:
+    with_subelements:
       - "{{ system_fabric.compute_transp_nodes}}"
-      - "{{ system_fabric.compute_transp_nodes.pnics}}"      
+      - "{{ pnics}}"      
       # - "{{ lookup('dict', userssystem_fabric.compute_transp_nodes.pnics) }}"
     when: item.0.switch_type == 'NVDS'    
