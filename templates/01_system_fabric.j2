@@ -1,5 +1,20 @@
+{# - name: Assert if dictionary
+    assert:
+      that: ( mydict is defined ) and ( mydict | type_debug == "dict" )
+
+  - name: Assert if list
+    assert:
+      that: ( mylist is defined ) and ( mylist | type_debug == "list" ) #}
+
+
 # {{ ansible_managed }}
-{% set fabric = spreadsheet_infra %}
+{% set fabric = spreadsheet_system_fabric %}
+{% macro uplnkvds(arg1,arg2) %}
+{% if 'Uplink ' in "i.UPLINK{{arg1}}" %}{{arg2}} "i.UPLINK{{arg1}}"{%endif%}
+{% endmacro           %}
+{% macro uplnknvds(arg1,arg2) %}
+{% if 'vmnic' in "i.UPLINK{{arg1}}" %}{{arg2}} "i.UPLINK{{arg1}}"{%endif%}
+{% endmacro           %}
 ---
 
 system_fabric:
@@ -15,3 +30,20 @@ system_fabric:
     - {{tep|ipaddr('host/prefix')}}
 {% endfor %}
 {%endif%}
+
+  compute_transp_nodes:
+{% for i in fabric if ((i.Node_type == 'vsphere_cluster' or i.Node_type == 'single_esxi_host') and i.vcenter_ip and i.Uplink_profile) %}
+    - { vcenter: "vCenter_{{i.vcenter_ip}}"{%if i.Node_name and (i.Node_type|lower == 'vsphere_cluster')%}, cluster_name: "{{i.Node_name}}", transport_node_profile_name: "TranspNodeProfl-cluster-{{i.Node_name}}"{%elif i.Note_ip and i.Node_type == 'single_esxi_host'%}, node_ip: "{{i.Node_ip|ipaddr}}", {%endif%},  switch_type: {%if i.NVDS_type|lower == 'vds 7'%}'VDS'{%else%}'NVDS'{%endif%}, TZ: ['TZ_overlay','TZ_Vlan'], uplink_profile: "{{i.Uplink_profile}}",  static_ip_assign: "NSX_TEP_POOL"{%if i.NVDS_type|lower == 'vds 7'%}, uplinks: [uplnkvds(1)uplnkvds(2,',')uplnkvds(3,',')uplnkvds(4,',')uplnkvds(5,',')uplnkvds(6,',')uplnkvds(7,',')uplnkvds(8,',')]{%elif i.NVDS_type|lower == 'n-vds'%}, pnics: [uplnknvds(1)uplnknvds(2,',')uplnknvds(3,',')uplnknvds(4,',')uplnknvds(5,',')uplnknvds(6,',')uplnknvds(7,',')uplnknvds(8,',')] {%endif%}   }
+{% endfor %}
+
+
+
+
+
+
+
+
+
+
+
+
