@@ -9,10 +9,10 @@
 
 # {{ ansible_managed }}
 {% set fabric = spreadsheet_system_fabric %}
-{% macro uplnkvds(arg1,arg2) %}
+{% macro uplnkvds(arg1,arg2='') %}
 {% if 'Uplink ' in "i.UPLINK{{arg1}}" %}{{arg2}} "i.UPLINK{{arg1}}"{%endif%}
 {% endmacro           %}
-{% macro uplnknvds(arg1,arg2) %}
+{% macro uplnknvds(arg1,arg2='') %}
 {% if 'vmnic' in "i.UPLINK{{arg1}}" %}{{arg2}} "i.UPLINK{{arg1}}"{%endif%}
 {% endmacro           %}
 ---
