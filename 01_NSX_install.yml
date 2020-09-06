@@ -210,54 +210,41 @@
 #   #   loop: "{{uplinkprofs| subelements('active-uplinks', 'skip_missing=True')}}"
 
 
-  # - name: Create NSX-T 2.5 transport node profile 
-  #   nsxt_transport_node_profiles:
-  #     hostname: "{{nsxt_ip}}"
-  #     username: "{{nsx_username}}"
-  #     password: "{{nsx_password}}"
-  #     validate_certs: False
-  #     resource_type: TransportNodeProfile
-  #     display_name: "{{ item[0].transport_node_profile_name }}"
-  #     description: "Transport Node Profile {{ item[0].transport_node_profile_name }}"
-  #     host_switch_spec:
-  #       resource_type: StandardHostSwitchSpec
-  #       host_switches:
-  #       - host_switch_profiles:
-  #         - name: "{{item[0].uplink_profile}}"
-  #           type: "UplinkHostSwitchProfile"
-  #         - name: LLDP [Send Packet Enabled]
-  #           type: LldpHostSwitchProfile
-  #         - name: nsx-default-nioc-hostswitch-profile
-  #           type: NiocProfile                      
-  #         host_switch_name: "NSXT-NVDS"
-  #         host_switch_mode: "STANDARD"
-  #         pnics:
-  #         - device_name: "item[1]"
-  #           uplink_name: "uplink-1"
-  #         ip_assignment_spec:
-  #           resource_type: "StaticIpPoolSpec"
-  #           ip_pool_name: "IPPool-IPV4-1"
-  #         vmk_install_migration:
-  #         - device_name: vmk0
-  #           destination_network_name: "ls_vmk_Mgmt"
-  #     transport_zone_endpoints:
-  #     - transport_zone_name: "TZ_Overlay"
-  #     - transport_zone_name: "TZ_Vlan"
-  #     state: present
-  #   with_subelements:
-  #     - "{{ system_fabric.compute_transp_nodes}}"
-  #     - "{{ lookup('dict', users) }}"
-  #   when:
-  #     - compute_transp_nodes is defined and 
-  #     - nsxt_major_version == 2  
+  - name: Create NSX-T transport node profile for clusters with NVDS
+    nsxt_transport_node_profiles:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      resource_type: TransportNodeProfile
+      display_name: "{{ item[0].transport_node_profile_name }}"
+      description: "Transport Node Profile {{ item[0].transport_node_profile_name }}"
+      host_switch_spec:
+        resource_type: StandardHostSwitchSpec
+        host_switches:
+        - host_switch_profiles:
+          - name: "{{item[0].uplink_profile}}"
+            type: "UplinkHostSwitchProfile"
+          - name: LLDP [Send Packet Enabled]
+            type: LldpHostSwitchProfile
+          - name: nsx-default-nioc-hostswitch-profile
+            type: NiocProfile                      
+          host_switch_name: "NSXT-NVDS"
+          host_switch_mode: "STANDARD"
+          is_migrate_pnics: "False"
+          pnics: "{{item.1|dict2items(key_name='uplink_name', value_name='device_name')}}"
+          # - device_name: "item[1]"
+          #   uplink_name: "uplink-1"
+          ip_assignment_spec:
+            resource_type: "StaticIpPoolSpec"
+            ip_pool_name: "IPPool-IPV4-1"
+          # vmk_install_migration:
+          # - device_name: vmk0
+          #   destination_network_name: "ls_vmk_Mgmt"
+      transport_zone_endpoints:
+      - transport_zone_name: "TZ_Overlay"
+      - transport_zone_name: "TZ_Vlan"
+      state: present
+    loop: "{{system_fabric|json_query('compute_transp_nodes[*]')|subelements('nics', 'skip_missing=True')}}"
+    when: (item.0.switch_type == 'NVDS') and (transport_node_profile_name is defined) and (nics is defined)
 
-
-  - name: Test variables
-    debug:
-      # msg:  "- {{item.1.key}}: {{item.1.value}}" 
-      msg: "{{item.1}}"
-    with_items:
-      - "{{ system_fabric.compute_transp_nodes}}"
-      # - "{{TZ}}"      
-      # - "{{ lookup('dict', userssystem_fabric.compute_transp_nodes.pnics) }}"
-    when: item.switch_type == 'NVDS'    
