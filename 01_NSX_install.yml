@@ -223,7 +223,7 @@
         resource_type: StandardHostSwitchSpec
         host_switches:
         - host_switch_profiles:
-          - name: "{{item[0].uplink_profile}}"
+          - name: "UplinkProfl-{{item[0].uplink_profile}}"
             type: "UplinkHostSwitchProfile"
           - name: LLDP [Send Packet Enabled]
             type: LldpHostSwitchProfile
