@@ -246,5 +246,5 @@
       - transport_zone_name: "TZ_Vlan"
       state: present
     loop: "{{system_fabric|json_query('compute_transp_nodes[*]')|subelements('nics', 'skip_missing=True')}}"
-    when: (item.0.switch_type == 'NVDS') and (transport_node_profile_name is defined) and (nics is defined)
+    when: (item.0.switch_type == 'NVDS') and (item.0.transport_node_profile_name is defined) and (item.0.nics is defined)
 
