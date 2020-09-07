@@ -232,8 +232,9 @@
           host_switch_name: "NSXT-NVDS"
           host_switch_mode: "STANDARD"
           is_migrate_pnics: "False"
-          # pnics: "{{item.1|dict2items(key_name='uplink_name', value_name='device_name')}}"
-          pnics: "{{item.2|dict2items(key_name='uplink_name', value_name='device_name')}}"
+          pnics: |
+            "{{item.1|dict2items(key_name='uplink_name', value_name='device_name')}}"
+          # pnics: "{{item.2|dict2items(key_name='uplink_name', value_name='device_name')}}"
           # - device_name: "item[1]"
           #   uplink_name: "uplink-1"
           ip_assignment_spec:
@@ -246,9 +247,7 @@
       - transport_zone_name: "TZ_Overlay"
       - transport_zone_name: "TZ_Vlan"
       state: present
-    with_nested:
-      - "{{system_fabric|json_query('compute_transp_nodes[*]')|subelements('nics', 'skip_missing=True')}}"
-      - item.1
+    loop: "{{system_fabric|json_query('compute_transp_nodes[*]')|subelements('nics', 'skip_missing=True')}}"
 
     when: (item.0.switch_type == 'NVDS') and (item.0.transport_node_profile_name is defined) and (item.0.nics is defined)
 
