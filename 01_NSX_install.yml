@@ -234,8 +234,7 @@
           host_switch_name: "NSXT-NVDS"
           host_switch_mode: "STANDARD"
           is_migrate_pnics: "False"
-          pnics:
-            "{{item.1|dict2items(key_name='uplink_name', value_name='device_name')}}"
+          pnics: "{{item.1|dict2items(key_name='uplink_name', value_name='device_name')}}"
           # pnics: "{{item.2|dict2items(key_name='uplink_name', value_name='device_name')}}"
           # - device_name: "item[1]"
           #   uplink_name: "uplink-1"
