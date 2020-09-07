@@ -210,7 +210,7 @@
 #   #   loop: "{{uplinkprofs| subelements('active-uplinks', 'skip_missing=True')}}"
 
   - set_fact:
-        tn_tmp_nic_list = "{{tn_tmp_nic_list|default([]) + item.1|dict2items(key_name='uplink_name', value_name='device_name')}}"
+        tn_tmp_nic_list = "{{tn_tmp_nic_list|default([])}} + {{item.1|dict2items(key_name='uplink_name', value_name='device_name')}}"
       loop: "{{system_fabric|json_query('compute_transp_nodes[*]')|subelements('nics', 'skip_missing=True')}}" 
     when: (item.0.switch_type == 'NVDS') and (item.0.transport_node_profile_name is defined) and (item.0.nics is defined)
     register: "my_tmp_{{item.0.transport_node_profile_name}}"
