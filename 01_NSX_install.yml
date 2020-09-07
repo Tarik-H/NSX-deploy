@@ -248,7 +248,7 @@
       state: present
     with_nested:
       - "{{system_fabric|json_query('compute_transp_nodes[*]')|subelements('nics', 'skip_missing=True')}}"
-      - "{{item.1}}"
+      - item.1
 
     when: (item.0.switch_type == 'NVDS') and (item.0.transport_node_profile_name is defined) and (item.0.nics is defined)
 
