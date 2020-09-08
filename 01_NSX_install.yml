@@ -243,9 +243,9 @@
           # vmk_install_migration:
           # - device_name: vmk0
           #   destination_network_name: "ls_vmk_Mgmt"
-        transport_zone_endpoints:
-        - transport_zone_name: "TZ_Overlay"
-        - transport_zone_name: "TZ_Vlan"
+      transport_zone_endpoints:
+      - transport_zone_name: "TZ_Overlay"
+      - transport_zone_name: "TZ_Vlan"
       state: present
     # loop: "{{system_fabric|json_query('compute_transp_nodes[*]')|subelements('nics', 'skip_missing=True')}}"
     loop: "{{system_fabric|json_query('compute_transp_nodes[*]')}}"
