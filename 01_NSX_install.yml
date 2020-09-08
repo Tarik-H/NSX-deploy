@@ -71,9 +71,9 @@
 #     with_items: "{{system_fabric.vcenters_list}}"
 #     when: system_fabric.vcenters_list is defined
 
-  - name: View all compute managers
-    debug:
-      msg: "{{cpu_mgr}}"
+  # - name: View all compute managers
+  #   debug:
+  #     msg: "{{cpu_mgr}}"
 
   - name: Create transport zone
     nsxt_transport_zones:
