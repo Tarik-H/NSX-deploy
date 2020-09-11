@@ -346,6 +346,7 @@
         display_name: "{{item.node_ip}}"
         ip_addresses: ["{{item.node_ip}}"]
         os_type: "ESXI"
+        managed_by_server: "{{item.vcenter}}"
         # os_version: "6.5.0"
         # host_credential:
         #   username: "root"
