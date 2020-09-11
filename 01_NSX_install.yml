@@ -343,7 +343,7 @@
       - transport_zone_name: "TZ_Vlan"
       node_deployment_info:
         resource_type: "HostNode"
-        display_name: {{item.node_ip}}"
+        display_name: "{{item.node_ip}}"
         ip_addresses: ["{{item.node_ip}}"]
         os_type: "ESXI"
         # os_version: "6.5.0"
