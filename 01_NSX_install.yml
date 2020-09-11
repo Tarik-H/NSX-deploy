@@ -308,7 +308,7 @@
       transport_node_profile_name: "{{ item.transport_node_profile_name }}"
       state: present
     loop: "{{system_fabric|json_query('compute_transp_nodes[*]')}}"
-    when: (item.cluster_name !='' ) and (item.transport_node_profile_name is defined) and (item.nics is defined)
+    when: (item.cluster_name is defined and item.cluster_name !='' ) and (item.transport_node_profile_name is defined) and (item.nics is defined)
 
 
   - name: Create Single Transport Nodes
@@ -354,7 +354,7 @@
       state: "present"
       state: present
     loop: "{{system_fabric|json_query('compute_transp_nodes[*]')}}"
-    when: (item.node_ip !='' and item.cluster_name is not defined) and (item.transport_node_profile_name is defined) and (item.nics is defined)
+    when: (item.node_ip is defined and item.cluster_name is not defined) and (item.transport_node_profile_name is defined) and (item.nics is defined)
 
 
 
