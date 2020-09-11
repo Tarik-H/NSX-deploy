@@ -353,7 +353,7 @@
         #   thumbprint: "e7fd7dd84267da10f991812ca62b2bedea3a4a62965396a04728da1e7f8e1cb9"
       state: present
     loop: "{{system_fabric|json_query('compute_transp_nodes[*]')}}"
-    when: (item.node_ip is ipaddr  ) and (item.transport_node_profile_name is defined) and (item.nics is defined)
+    when: (item.node_ip is defined) and (item.transport_node_profile_name is defined) and (item.nics is defined)
 
 
 
