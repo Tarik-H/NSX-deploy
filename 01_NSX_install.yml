@@ -341,9 +341,9 @@
           # vmk_install_migration:
           # - device_name: vmk0
           #   destination_network_name: "ls_vmk_Mgmt"
-      transport_zone_endpoints:
-      - transport_zone_name: "TZ_Overlay"
-      - transport_zone_name: "TZ_Vlan"
+      # transport_zone_endpoints:
+      # - transport_zone_name: "TZ_Overlay"
+      # - transport_zone_name: "TZ_Vlan"
       node_deployment_info:
         resource_type: "HostNode"
         display_name: "{{item.node_ip}}"
