@@ -345,7 +345,7 @@
       # - transport_zone_name: "TZ_Overlay"
       # - transport_zone_name: "TZ_Vlan"
       node_deployment_info:
-        resource_type: "HostNode"
+        resource_type: "Node"
         display_name: "{{item.node_ip}}"
         ip_addresses: ["{{item.node_ip}}"]
         discovered_ip_addresses: ["{{item.node_ip}}"]
