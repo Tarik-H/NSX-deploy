@@ -330,6 +330,9 @@
             type: NiocProfile                      
           host_switch_name: "NSXT-NVDS"
           host_switch_mode: "STANDARD"
+          transport_zone_endpoints:
+          - transport_zone_name: "TZ_Overlay"
+          - transport_zone_name: "TZ_Vlan"
           is_migrate_pnics: "False"
           pnics: "{{item.nics}}"
           ip_assignment_spec:
