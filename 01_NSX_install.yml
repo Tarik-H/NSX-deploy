@@ -467,4 +467,4 @@
 
       state: present
     loop: "{{system_fabric|json_query('edge_transp_nodes[*]')}}"
-    when: (item.edge_name is defined) and (item.edge_vm_fqdn is defined) and (item.edge_vm_fqdn is defined) and (item.dge_vsphere_cluster is defined) and (item.edge_vm_mgmt_ip is defined) and (item.edge_vm_mgmt_pg)
+    when: (item.edge_name is defined) and (item.edge_vm_fqdn is defined) and (item.edge_vm_fqdn is defined) and (item.dge_vsphere_cluster is defined) and (item.edge_vm_mgmt_ip is defined) and (item.edge_vm_mgmt_pg is defined)
