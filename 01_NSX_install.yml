@@ -374,7 +374,7 @@
           password: "{{esxi_password}}"
         #   thumbprint: "e7fd7dd84267da10f991812ca62b2bedea3a4a62965396a04728da1e7f8e1cb9"
       state: present
-    loop: "{{system_fabric|json_query('compute_transp_nodes[*]')}}"
+    loop: "{{system_fabric|json_query('compute_transp_nodes[*]'|default([]))}}"
     when: (item.node_ip is defined) and (item.switch_type == 'VDS') and (esxi_username is defined) and (esxi_password is defined)
 
   # - name: Gather list of discovered Transport nodes
