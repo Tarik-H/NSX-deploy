@@ -441,7 +441,7 @@
         display_name: "{{item.edge_name}}"
         ip_addresses:
         deployment_config:
-          form_factor: "item.edge_vm_size|upper"
+          form_factor: "{{item.edge_vm_size|upper}}"
           node_user_settings:
             cli_password: "{{ edge-vm-root-password|default(nsx_password) }}"
             root_password: "{{ edge-vm-root-password|default(nsx_password) }}"
