@@ -440,6 +440,10 @@
         resource_type: "EdgeNode"
         display_name: "{{item.edge_name}}"
         ip_addresses:
+        node_settings:
+          dns_servers: "{{nsxtm_dns.body.name_servers}}"
+          enable_ssh: True
+          ntp_servers: "{{nsxtm_ntp.body.service_properties.servers}}"
         deployment_config:
           form_factor: "{{item.edge_vm_size|upper}}"
           node_user_settings:
