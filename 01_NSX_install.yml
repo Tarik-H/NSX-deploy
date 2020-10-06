@@ -451,15 +451,15 @@
             vc_username: "{{ vcenter_user}}"
             vc_password: "{{ vcenter_pass }}"        
             data_networks:
-            - "{{ edge_vm_mgmt_pg }}"
+            - "{{ item.edge_vm_mgmt_pg }}"
             # - "{{ vds.uplink2_pg }}"
-            management_network: "{{ edge_vm_mgmt_pg}}"
+            management_network: "{{ item.edge_vm_mgmt_pg}}"
             management_port_subnets:
             - ip_addresses:
-              - "{{ edge_vm_mgmt_ip }}"
-              prefix_length: "{{ edge_vm_mgmt_ip|ipaddr('prefix') }}"
+              - "{{ item.edge_vm_mgmt_ip }}"
+              prefix_length: "{{ item.edge_vm_mgmt_ip|ipaddr('prefix') }}"
             default_gateway_addresses: 
-            - "{{edge_vm_ip_gateway|ipaddr}}"
+            - "{{item.edge_vm_ip_gateway|ipaddr}}"
             hostname: "{{ item.edge_name}}"
             compute: "{{ item.edge_vsphere_cluster }}"
             storage: "{{ item.edge_vm_datastore }}"
