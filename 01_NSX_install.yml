@@ -456,7 +456,7 @@
             management_network: "{{ item.edge_vm_mgmt_pg}}"
             management_port_subnets:
             - ip_addresses:
-              - "{{ item.edge_vm_mgmt_ip }}"
+              - "{{ item.edge_vm_mgmt_ip|ipaddr('address') }}"
               prefix_length: "{{ item.edge_vm_mgmt_ip|ipaddr('prefix') }}"
             default_gateway_addresses: 
             - "{{item.edge_vm_ip_gateway|ipaddr}}"
