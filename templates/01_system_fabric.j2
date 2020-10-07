@@ -43,7 +43,7 @@ system_fabric:
 
 {% set members_temp =[] %} 
   edge_clusters:
-{%- for row in fabric if ((row.Within_Edge_cluster|lower=='yes') and (row.Edge_cluster_name) and (row.Edge_cluster_name not in members_temp)) %}
+{%- for row in fabric if ((row.Within_Edge_cluster|lower=='yes') and (row.Edge_cluster_name not in members_temp)) %}
 {{members_temp.append(row.Edge_cluster_name)}}
     - edge_cluster_name: "{{row.Edge_cluster_name}}"
       members:
