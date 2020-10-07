@@ -487,7 +487,8 @@
       # - transport_node_name: "{{ edge_node2 }}"
       state: present
     register: edge_cluster
-    loop:  "{{system_fabric|json_query('edge_clusters[*]')}}"
-    when: 
+    loop: "{{system_fabric|json_query('edge_clusters[*]')}}"
+    when:
+      - system_fabric.edge_clusters is defined
       - item.edge_cluster_name is defined
       - item.members is defined
