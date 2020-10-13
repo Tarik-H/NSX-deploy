@@ -24,32 +24,32 @@
       path: ./data/fragments
       state: directory
 
-  - name: Copy & prepare the uploaded input Excel file
-    copy:
-      src: "{{nsx_filepath}}/"
-      dest: "./data/{{nsx_filename}}"
+  # - name: Copy & prepare the uploaded input Excel file
+  #   copy:
+  #     src: "{{nsx_filepath}}/"
+  #     dest: "./data/{{nsx_filename}}"
 
-  - name: Initialize the excel file to use the input data
-    xls_to_facts:
-      src: "./data/{{nsx_filename}}"
-    tags:
-      - excel
+  # - name: Initialize the excel file to use the input data
+  #   xls_to_facts:
+  #     src: "./data/{{nsx_filename}}"
+  #   tags:
+  #     - excel
 
-  - name: Create system fabric model from spreadsheet data
-    template:
-      src: "./templates/{{item}}_system_fabric.j2"
-      dest: "./data/fragments/{{item}}_system_fabric.yml"
-    with_items:
-      - "01"
+  # - name: Create system fabric model from spreadsheet data
+  #   template:
+  #     src: "./templates/{{item}}_system_fabric.j2"
+  #     dest: "./data/fragments/{{item}}_system_fabric.yml"
+  #   with_items:
+  #     - "01"
 
-  - name: Assemble fabric model
-    assemble:
-      src: "./data/fragments/"
-      dest: "./data/system_fabric.yml"
+  # - name: Assemble fabric model
+  #   assemble:
+  #     src: "./data/fragments/"
+  #     dest: "./data/system_fabric.yml"
 
-  - name: load data
-    include_vars:
-      file: "./data/system_fabric.yml"
+  # - name: load data
+  #   include_vars:
+  #     file: "./data/system_fabric.yml"
 
 #   - name: Provision list of compute managers
 #     nsxt_fabric_compute_managers:
