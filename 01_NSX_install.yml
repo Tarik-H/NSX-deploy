@@ -218,9 +218,10 @@
       - {"name": "compute-actv-actv-2nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "UPLINK1", uplink_type: "PNIC"},{uplink_name: "UPLINK2", uplink_type: "PNIC"}]} }
       - {"name": "compute-actv-stdby-2nics", 'tm': {"policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "UPLINK1", uplink_type: "PNIC"}], "standby_list": [{uplink_name: "UPLINK2", uplink_type: "PNIC"}]} }
       - {"name": "compute-actv-stdby-1nic", 'tm': {"policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "UPLINK1", uplink_type: "PNIC"}] } }
-      - {"name": "edge-multi-TEP-2nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: "PNIC"},{uplink_name: "EDG-UPLINK2", uplink_type: "PNIC"}]}, 'ntm': [{"name": "LEFT-TOR-Router", "policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: "PNIC"}]}, {"name": "RIGHT-TOR", "policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK2", uplink_type: "PNIC"}]} ] }
+      - {"name": "edge-multi-TEP-2nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: "PNIC"},{uplink_name: "EDG-UPLINK2", uplink_type: "PNIC"}]}, 'ntm': [{"name": "LEFT-TOR-Router", "policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: "PNIC"}]}, {"name": "RIGHT-TOR-Router", "policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK2", uplink_type: "PNIC"}]} ] }
       - {"name": "edge-single-TEP-2nics", 'tm': {"policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: "PNIC"}],"standby_list": [{uplink_name: "EDG-UPLINK2", uplink_type: "PNIC"}]}, 'ntm': [{"name": "LEFT-TOR-Router", "policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: "PNIC"}]} ] }
-  # - name: test
+      - {"name": "edge-multi-TEP-4nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: "PNIC"},{uplink_name: "EDG-UPLINK2", uplink_type: "PNIC"}]}, 'ntm': [{"name": "LEFT-TOR-Router", "policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK3", uplink_type: "PNIC"}]}, {"name": "RIGHT-TOR-Router", "policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK4", uplink_type: "PNIC"}]} ] }
+      # - name: test
   #   debug:
   #     msg: "{{item.0}}"
   #     msg: "{{item.1}}"
