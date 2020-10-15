@@ -506,5 +506,7 @@
       is_default: "false"
       nested_nsx: "false"
       state: "present"
-      uplink_teaming_policy_names: "[LEFT-TOR-Router, RIGHT-TOR-Router]"
+      uplink_teaming_policy_names: 
+        - "LEFT-TOR-Router"
+        - "RIGHT-TOR-Router"
     when: system_fabric.edge_transp_nodes|length != 0
