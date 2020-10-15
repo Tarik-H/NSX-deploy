@@ -105,12 +105,13 @@
 #       transport_type: "{%if 'Overlay' in item%}OVERLAY{%elif 'Vlan' in item%}VLAN{%endif%}"
 #       is_default: "false"
 #       nested_nsx: "false"
-#       host_switch_name: "NSXT-NVDS"
+##       host_switch_name: "NSXT-NVDS"
 #       state: "present"
 #     with_items:
 #       - Overlay
 #       - Vlan
-#       - Edge-Vlan
+#       - Edge-Peering-Vlan
+
 
 # # # This is a spot in case the Edges are nested inside compute transport node NVDS
 # #   # - name: Create transport zone
@@ -456,8 +457,7 @@
   #           vc_username: "{{ vcenter_user}}"
   #           vc_password: "{{ vcenter_pass }}"        
   #           data_networks: "{{item.edge_vm_networks}}"
-  #           # - "{{ item.edge_vm_mgmt_pg }}"
-  #           # - "{{ vds.uplink2_pg }}"
+
   #           management_network: "{{ item.edge_vm_mgmt_pg}}"
   #           management_port_subnets:
   #           - ip_addresses:
@@ -493,3 +493,19 @@
   #     - system_fabric.edge_clusters is defined
   #     - item.edge_cluster_name is defined
   #     - item.members is defined
+
+  - name: Add named teaming policies to Edge Vlan TZ
+    nsxt_transport_zones:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      resource_type: "TransportZone"
+      display_name: "TZ_Edge-Peering-Vlan"
+      host_switch_mode: "STANDARD"
+      transport_type: "VLAN"
+      is_default: "false"
+      nested_nsx: "false"
+      state: "present"
+      uplink_teaming_policy_names: "[LEFT-TOR-Router, RIGHT-TOR-Router]"
+    loop: "{{system_fabric|json_query('edge_transp_nodes[*]')}}"
