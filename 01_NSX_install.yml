@@ -92,25 +92,25 @@
 
 
 
-#   - name: Create transport zone
-#     nsxt_transport_zones:
-#       hostname: "{{nsxt_ip}}"
-#       username: "{{nsx_username}}"
-#       password: "{{nsx_password}}"
-#       validate_certs: False
-#       resource_type: "TransportZone"
-#       display_name: "TZ_{{item}}"
-#       host_switch_mode: "STANDARD"
-#       description: "NSX configured {{item}} Transport Zone"
-#       transport_type: "{%if 'Overlay' in item%}OVERLAY{%elif 'Vlan' in item%}VLAN{%endif%}"
-#       is_default: "false"
-#       nested_nsx: "false"
-##       host_switch_name: "NSXT-NVDS"
-#       state: "present"
-#     with_items:
-#       - Overlay
-#       - Vlan
-#       - Edge-Peering-Vlan
+  - name: Create transport zone
+    nsxt_transport_zones:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      resource_type: "TransportZone"
+      display_name: "TZ_{{item}}"
+      host_switch_mode: "STANDARD"
+      description: "NSX configured {{item}} Transport Zone"
+      transport_type: "{%if 'Overlay' in item%}OVERLAY{%elif 'Vlan' in item%}VLAN{%endif%}"
+      is_default: "false"
+      nested_nsx: "false"
+#       host_switch_name: "NSXT-NVDS"
+      state: "present"
+    with_items:
+      - Overlay
+      - Vlan
+      - Edge_Peering_Vlan
 
 
 # # # This is a spot in case the Edges are nested inside compute transport node NVDS
@@ -438,6 +438,7 @@
   #     transport_zone_endpoints:
   #     - transport_zone_name: "TZ_Overlay"
   #     - transport_zone_name: "TZ_Vlan"
+  #     - transport_zone_name: "TZ_Edge_Peering_Vlan"
   #     node_deployment_info:
   #       resource_type: "EdgeNode"
   #       display_name: "{{item.edge_name}}"
@@ -501,7 +502,7 @@
       password: "{{nsx_password}}"
       validate_certs: False
       resource_type: "TransportZone"
-      display_name: "TZ_Edge-Peering-Vlan"
+      display_name: "TZ_Edge_Peering_Vlan"
       host_switch_mode: "STANDARD"
       transport_type: "VLAN"
       is_default: "false"
@@ -509,3 +510,4 @@
       state: "present"
       uplink_teaming_policy_names: "[LEFT-TOR-Router, RIGHT-TOR-Router]"
     loop: "{{system_fabric|json_query('edge_transp_nodes[*]')}}"
+
