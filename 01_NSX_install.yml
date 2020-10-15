@@ -512,21 +512,21 @@
         - "RIGHT-TOR-Router"
     when: system_fabric.edge_transp_nodes|length != 0
 
-  - name: Create Segments needed for T0 external connectivity
-    nsxt_policy_segment:
-      hostname: "{{nsxt_ip}}"
-      username: "{{nsx_username}}"
-      password: "{{nsx_password}}"
-      validate_certs: False
-      display_name: "{{ segment1_display_name }}"
-      state: present
-      transport_zone_display_name: "{{ common_tz_display_name }}"
-      replication_mode: "{{ common_replication_mode }}"
-      admin_state: UP
-      vlan_ids:
-      - "{{ segment1_vlan_id}}"
-      advanced_config:
-      connectivity: "ON"
-      hybrid: False
-      local_egress: False
-      uplink_teaming_policy_name: "{{ segment1_uplink_profile }}"
+  # - name: Create Segments needed for T0 external connectivity
+  #   nsxt_policy_segment:
+  #     hostname: "{{nsxt_ip}}"
+  #     username: "{{nsx_username}}"
+  #     password: "{{nsx_password}}"
+  #     validate_certs: False
+  #     display_name: "{{ segment1_display_name }}"
+  #     state: present
+  #     transport_zone_display_name: "{{ common_tz_display_name }}"
+  #     replication_mode: "{{ common_replication_mode }}"
+  #     admin_state: UP
+  #     vlan_ids:
+  #     - "{{ segment1_vlan_id}}"
+  #     advanced_config:
+  #     connectivity: "ON"
+  #     hybrid: False
+  #     local_egress: False
+  #     uplink_teaming_policy_name: "{{ segment1_uplink_profile }}"
