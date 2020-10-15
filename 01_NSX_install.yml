@@ -503,6 +503,7 @@
       display_name: "TZ_Edge_Peering_Vlan"
       host_switch_mode: "STANDARD"
       transport_type: "VLAN"
+      host_switch_name: "NSXT-NVDS"
       is_default: "false"
       nested_nsx: "false"
       state: "present"
