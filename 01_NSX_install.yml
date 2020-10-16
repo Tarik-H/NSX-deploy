@@ -538,3 +538,5 @@
         uplink_teaming_policy_name: "{{ item.named_teaming }}"
     loop: "{{l2_segments}}"
     when: l2_segments is defined and item.named_teaming is defined
+    vars: 
+      ansible_python_interpreter: /usr/bin/python3    
