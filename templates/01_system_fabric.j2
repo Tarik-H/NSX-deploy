@@ -7,7 +7,6 @@
       that: ( mylist is defined ) and ( mylist | type_debug == "list" ) #}
 # {{ ansible_managed }}
 {% set fabric = spreadsheet_system_fabric %}
-{% set vsegments = spreadsheet_vNetworking_segments %}
 {# {% macro uplnkvds(arg1,arg2='') %}
 {% for k,v in i.items() if "Uplink " in k %}{{arg2}} "i.UPLINK{{arg1}}"{%endfor%}
 {% endmacro           %}
