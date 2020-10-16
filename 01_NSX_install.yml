@@ -537,4 +537,4 @@
         local_egress: False
         uplink_teaming_policy_name: "{{ item.named_teaming }}"
     loop: "{{l2_segmennts}}"
-    when: l2_segments is defined and item.named_teaming is defined 
+    when: l2_segments is defined and item.named_teaming is defined
