@@ -1,6 +1,5 @@
 # {{ ansible_managed }}
 {% set vsegments = spreadsheet_vNetworking_segments %}
----
 
 l2_segments:
 {% for i in vsegments if (i.Segment_name) and (i.Transport_zone) %}
