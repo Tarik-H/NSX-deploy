@@ -40,6 +40,13 @@
     with_items:
       - "01"
 
+  - name: Create vnetworking model from spreadsheet data
+    template:
+      src: "./templates/{{item}}_vnetworking.j2"
+      dest: "./data/fragments/{{item}}_system_fabric.yml"
+    with_items:
+      - "02"
+
   - name: Assemble fabric model
     assemble:
       src: "./data/fragments/"
