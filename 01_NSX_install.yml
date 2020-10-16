@@ -530,7 +530,7 @@
       transport_zone_display_name: "{{ item.tz }}"
       replication_mode: "MTEP"
       admin_state: UP
-      vlan_ids: "{{seg_vlanids}}"
+      vlan_ids: "{{item.seg_vlanids}}"
       advanced_config:
         connectivity: "ON"
         hybrid: False
