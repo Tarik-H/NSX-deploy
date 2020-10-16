@@ -510,23 +510,24 @@
       uplink_teaming_policy_names: 
         - "LEFT-TOR-Router"
         - "RIGHT-TOR-Router"
-    when: system_fabric.edge_transp_nodes|length != 0
+    when: system_fabric.edge_transp_nodes is defined
 
-  # - name: Create Segments needed for T0 external connectivity
-  #   nsxt_policy_segment:
-  #     hostname: "{{nsxt_ip}}"
-  #     username: "{{nsx_username}}"
-  #     password: "{{nsx_password}}"
-  #     validate_certs: False
-  #     display_name: "{{ segment1_display_name }}"
-  #     state: present
-  #     transport_zone_display_name: "{{ common_tz_display_name }}"
-  #     replication_mode: "{{ common_replication_mode }}"
-  #     admin_state: UP
-  #     vlan_ids:
-  #     - "{{ segment1_vlan_id}}"
-  #     advanced_config:
-  #     connectivity: "ON"
-  #     hybrid: False
-  #     local_egress: False
-  #     uplink_teaming_policy_name: "{{ segment1_uplink_profile }}"
+  - name: Create Segments needed for T0 external N/S connectivity
+    nsxt_policy_segment:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      display_name: "{{ item.segment_name }}"
+      state: present
+      transport_zone_display_name: "{{ item.tz }}"
+      replication_mode: "MTEP"
+      admin_state: UP
+      vlan_ids: "{{seg_vlanids}}"
+      advanced_config:
+        connectivity: "ON"
+        hybrid: False
+        local_egress: False
+        uplink_teaming_policy_name: "{{ item.named_teaming }}"
+    loop: "{{l2_segmennts}}"
+    when: l2_segments is defined and item.named_teaming is defined 
