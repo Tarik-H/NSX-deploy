@@ -21,12 +21,13 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 
 DOCUMENTATION = '''
 ---
-module: nsxt_manager_status
-short_description: Shows status of nsxt manager
-description: Shows status of nsxt manager
+module: nsxt_cluster_profiles_facts
+short_description: List Cluster Profiles
+description: Returns paginated list of cluster profiles
+             Cluster profiles define policies for edge cluster and bridge cluster.
 
 version_added: "2.7"
-author: Rahul Raghuvanshi
+author: Kommireddy Akhilesh
 options:
     hostname:
         description: Deployed NSX manager hostname.
@@ -40,56 +41,41 @@ options:
         description: The password to authenticate with the NSX manager.
         required: true
         type: str
-
 '''
 
 EXAMPLES = '''
-- name: Shows status of nsxt manager
-  nsxt_manager_status:
-      hostname: "10.192.167.137"
-      username: "admin"
-      password: "Admin!23Admin"
-      validate_certs: False
-      wait_time: 50
+- name: List Cluster Profiles
+  nsxt_cluster_profiles_facts:
+    hostname: "10.192.167.137"
+    username: "admin"
+    password: "Admin!23Admin"
+    validate_certs: False
 '''
 
 RETURN = '''# '''
-import json, time
-from datetime import datetime
+
+import json
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.vmware_nsxt import vmware_argument_spec, request
 from ansible.module_utils._text import to_native
 
 def main():
   argument_spec = vmware_argument_spec()
-  argument_spec.update(wait_time=dict(required=False, type='int'))
   module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
   mgr_hostname = module.params['hostname']
   mgr_username = module.params['username']
   mgr_password = module.params['password']
   validate_certs = module.params['validate_certs']
-
   manager_url = 'https://{}/api/v1'.format(mgr_hostname)
 
   changed = False
-  wait_time = 10 # wait till 30 min
-  while wait_time < (module.params['wait_time'] *60):
-      try:
-        current_time = datetime.now()
-        (rc, resp) = request(manager_url+ '/cluster-manager/status', headers=dict(Accept='application/json'),
-                        url_username=mgr_username, url_password=mgr_password, validate_certs=validate_certs, ignore_errors=True)
-        if "overall_status" in resp and resp["overall_status"] == "STABLE":
-            module.exit_json(changed=changed, msg= " NSX manager is UP")
-        else:
-            time_diff = datetime.now() - current_time
-            time.sleep(10)
-            wait_time = time_diff.seconds + wait_time + 10
-      except Exception as err:
-        time_diff = datetime.now() - current_time
-        time.sleep(10)
-        wait_time = time_diff.seconds + wait_time + 10
-  module.fail_json(changed=changed, msg= " Error accessing nsx manager. Timed out")
+  try:
+    (rc, resp) = request(manager_url+ '/cluster-profiles', headers=dict(Accept='application/json'),
+                    url_username=mgr_username, url_password=mgr_password, validate_certs=validate_certs, ignore_errors=True)
+  except Exception as err:
+    module.fail_json(msg='Error accessing list of edge cluster. Error [%s]' % (to_native(err)))
 
+  module.exit_json(changed=changed, **resp)
 if __name__ == '__main__':
 	main()
