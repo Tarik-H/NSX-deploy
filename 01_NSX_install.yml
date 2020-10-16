@@ -538,6 +538,6 @@
         uplink_teaming_policy_name: "{{ item.named_teaming|default(omit) }}"
     loop: "{{l2_segments}}"
 #    when: l2_segments is defined and item.named_teaming is defined
-    when: l2_segments is defined and item.Transport_zone is defined    
+    when: l2_segments is defined and item.tz is defined    
     vars: 
       ansible_python_interpreter: /usr/bin/python3    
