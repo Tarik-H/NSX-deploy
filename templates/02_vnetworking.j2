@@ -1,5 +1,5 @@
 {% set vsegments = spreadsheet_vNetworking_segments %}
 l2_segments:
 {% for i in vsegments if (i.Segment_name) and (i.Transport_zone) %}
-    - { segment_name: "{{i.Segment_name}}", tz: "{{i.Transport_zone}}"{%if i.Gateway%}, gw_name: "{{i.Gateway}}"{%endif%}{%if i.Subnet|ipaddr('address/prefix')%}, seg_subnet: "{{i.Subnet|ipaddr('address/prefix')}}"{%endif%}{%if i.Vlans%}, seg_vlanids: ""{{i.Vlans|string.split(",")}}""{%endif%}{%if i.Named_teaming%}, named_teaming: "{{i.Named_teaming}}"{%endif%}   }
+    - { segment_name: "{{i.Segment_name}}", tz: "{{i.Transport_zone}}"{%if i.Gateway%}, gw_name: "{{i.Gateway}}"{%endif%}{%if i.Subnet|ipaddr('address/prefix')%}, seg_subnet: "{{i.Subnet|ipaddr('address/prefix')}}"{%endif%}{%if i.Vlans%}, seg_vlanids: ""{{(i.Vlans|string).split(",")}}""{%endif%}{%if i.Named_teaming%}, named_teaming: "{{i.Named_teaming}}"{%endif%}   }
 {% endfor %}
