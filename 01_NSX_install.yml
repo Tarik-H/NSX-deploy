@@ -56,44 +56,44 @@
     include_vars:
       file: "./data/system_fabric.yml"
 
-#   - name: Provision list of compute managers
-#     nsxt_fabric_compute_managers:
-#       hostname: "{{nsxt_ip}}"
-#       username: "{{nsx_username}}"
-#       password: "{{nsx_password}}"
-#       validate_certs: False
-#       display_name: "vCenter_{{item}}"
-#       server: "{{item}}"
-#       description: "vCenter_{{item}}"
-#       origin_type: vCenter
-#       credential:
-#         credential_type: "UsernamePasswordLoginCredential"
-#         username: "{{vcenter_user}}"
-#         password: "{{vcenter_pass}}"
-#       state: present
-#     register: cpu_mgr
-#     with_items: "{{system_fabric.vcenters_list}}"
-#     when: system_fabric.vcenters_list is defined
+  - name: Provision list of compute managers
+    nsxt_fabric_compute_managers:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      display_name: "vCenter_{{item}}"
+      server: "{{item}}"
+      description: "vCenter_{{item}}"
+      origin_type: vCenter
+      credential:
+        credential_type: "UsernamePasswordLoginCredential"
+        username: "{{vcenter_user}}"
+        password: "{{vcenter_pass}}"
+      state: present
+    register: cpu_mgr
+    with_items: "{{system_fabric.vcenters_list}}"
+    when: system_fabric.vcenters_list is defined
 
   # - name: View all compute managers
   #   debug:
   #     msg: "{{cpu_mgr}}"
 
 
-  # - name: Disable password expiration for admin user
-  #   nsxt_rest:
-  #     hostname: "{{nsxt_ip}}"
-  #     username: "{{nsx_username}}"
-  #     password: "{{nsx_password}}"
-  #     validate_certs: False
-  #     method: get
-  #     path: /api/v1/node/users/10000
-  #     content:
-  #       {
-  #         "userid": 10000,
-  #         "username": "admin",
-  #         "password_change_frequency": 0
-  #       }
+  - name: Disable password expiration for admin user
+    nsxt_rest:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      method: get
+      path: /api/v1/node/users/10000
+      content:
+        {
+          "userid": 10000,
+          "username": "admin",
+          "password_change_frequency": 0
+        }
 
 
 
@@ -115,7 +115,7 @@
     with_items:
       - Overlay
       - Vlan
-      - Edge_Peering_Vlan
+      # - Edge_Peering_Vlan
 
 
 # # # This is a spot in case the Edges are nested inside compute transport node NVDS
@@ -170,34 +170,34 @@
 # #   #     ansible_python_interpreter: /usr/bin/python3
 
 
-#   - name: create policy IP Pool
-#     nsxt_policy_ip_pool:
-#       hostname: "{{nsxt_ip}}"
-#       username: "{{nsx_username}}"
-#       password: "{{nsx_password}}"
-#       validate_certs: False
-#       id: NSX_TEP_POOL
-#       display_name: NSX_TEP_POOL
-#       state: "present"
-#       pool_static_subnets:      
-#         [
-#         {
-#           "display_name": "TEP_subnet_{{item|ipaddr('network')}}",
-#           "state": "present",
-#           "allocation_ranges": [
-#             {
-#               "start": "{{item|ipaddr('2')|ipaddr('address')}}",
-#               "end": "{{item|ipaddr('-2')|ipaddr('address')}}"
-#             }
-#           ],
-#           "gateway_ip": "{{item|ipaddr('address')}}",
-#           "cidr": "{{item|ipaddr('network/prefix')}}"
-#         }
-#        ]
-#     loop: "{{system_fabric.tep_pool_gws}}"
-#     when: system_fabric.tep_pool_gws is defined       
-#     vars: 
-#       ansible_python_interpreter: /usr/bin/python3
+  - name: create policy IP Pool
+    nsxt_policy_ip_pool:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      id: NSX_TEP_POOL
+      display_name: NSX_TEP_POOL
+      state: "present"
+      pool_static_subnets:      
+        [
+        {
+          "display_name": "TEP_subnet_{{item|ipaddr('network')}}",
+          "state": "present",
+          "allocation_ranges": [
+            {
+              "start": "{{item|ipaddr('3')|ipaddr('address')}}",
+              "end": "{{item|ipaddr('-3')|ipaddr('address')}}"
+            }
+          ],
+          "gateway_ip": "{{item|ipaddr('address')}}",
+          "cidr": "{{item|ipaddr('network/prefix')}}"
+        }
+       ]
+    loop: "{{system_fabric.tep_pool_gws}}"
+    when: system_fabric.tep_pool_gws is defined       
+    vars: 
+      ansible_python_interpreter: /usr/bin/python3
 
 
 
@@ -227,7 +227,7 @@
       - {"name": "edge-multi-TEP-2nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: "PNIC"},{uplink_name: "EDG-UPLINK2", uplink_type: "PNIC"}]}, 'ntm': [{"name": "LEFT-TOR-Router", "policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: "PNIC"}]}, {"name": "RIGHT-TOR-Router", "policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK2", uplink_type: "PNIC"}]} ] }
       - {"name": "edge-single-TEP-2nics", 'tm': {"policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: "PNIC"}],"standby_list": [{uplink_name: "EDG-UPLINK2", uplink_type: "PNIC"}]}, 'ntm': [{"name": "LEFT-TOR-Router", "policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: "PNIC"}]} ] }
       - {"name": "edge-multi-TEP-4nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: "PNIC"},{uplink_name: "EDG-UPLINK2", uplink_type: "PNIC"}]}, 'ntm': [{"name": "LEFT-TOR-Router", "policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: "PNIC"}]}, {"name": "RIGHT-TOR-Router", "policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK2", uplink_type: "PNIC"}]}, {"name": "For-L2-Bridged-Vlans", "policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK3", uplink_type: "PNIC"}]} ] }
-      # - name: test
+
   #   debug:
   #     msg: "{{item.0}}"
   #     msg: "{{item.1}}"
@@ -235,45 +235,45 @@
 
 
 
-#   - name: Create NSX-T transport node profile for clusters with NVDS
-#     nsxt_transport_node_profiles:
-#       hostname: "{{nsxt_ip}}"
-#       username: "{{nsx_username}}"
-#       password: "{{nsx_password}}"
-#       validate_certs: False
-#       resource_type: TransportNodeProfile
-#       display_name: "{{ item.transport_node_profile_name }}"
-#       description: "Transport Node Profile {{ item.transport_node_profile_name }}"
-#       host_switch_spec:
-#         resource_type: StandardHostSwitchSpec
-#         host_switches:
-#         - host_switch_profiles:
-#           - name: "UplinkProfl-{{item.uplink_profile}}"
-#             type: "UplinkHostSwitchProfile"
-#           - name: LLDP [Send Packet Enabled]
-#             type: LldpHostSwitchProfile
-#           - name: nsx-default-nioc-hostswitch-profile
-#             type: NiocProfile                      
-#           host_switch_name: "NSXT-NVDS"
-#           host_switch_mode: "STANDARD"
-#           is_migrate_pnics: "False"
-#           pnics: "{{item.nics}}"
-#           # pnics: "{{item.1|dict2items(key_name='uplink_name', value_name='device_name')}}"
-#           # - device_name: "item[1]"
-#           #   uplink_name: "uplink-1"
-#           ip_assignment_spec:
-#             resource_type: "StaticIpPoolSpec"
-#             ip_pool_name: "NSX_TEP_POOL"
-#           # vmk_install_migration:
-#           # - device_name: vmk0
-#           #   destination_network_name: "ls_vmk_Mgmt"
-#       transport_zone_endpoints:
-#       - transport_zone_name: "TZ_Overlay"
-#       - transport_zone_name: "TZ_Vlan"
-#       state: present
-#     # loop: "{{system_fabric|json_query('compute_transp_nodes[*]')|subelements('nics', 'skip_missing=True')}}"
-#     loop: "{{system_fabric|json_query('compute_transp_nodes[*]')}}"
-#     when: (item.switch_type == 'NVDS') and (item.transport_node_profile_name is defined) and (item.nics is defined)
+  - name: Create NSX-T transport node profile for clusters with NVDS
+    nsxt_transport_node_profiles:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      resource_type: TransportNodeProfile
+      display_name: "{{ item.transport_node_profile_name }}"
+      description: "Transport Node Profile {{ item.transport_node_profile_name }}"
+      host_switch_spec:
+        resource_type: StandardHostSwitchSpec
+        host_switches:
+        - host_switch_profiles:
+          - name: "UplinkProfl-{{item.uplink_profile}}"
+            type: "UplinkHostSwitchProfile"
+          - name: LLDP [Send Packet Enabled]
+            type: LldpHostSwitchProfile
+          - name: nsx-default-nioc-hostswitch-profile
+            type: NiocProfile                      
+          host_switch_name: "NSXT-NVDS"
+          host_switch_mode: "STANDARD"
+          is_migrate_pnics: "False"
+          pnics: "{{item.nics}}"
+          # pnics: "{{item.1|dict2items(key_name='uplink_name', value_name='device_name')}}"
+          # - device_name: "item[1]"
+          #   uplink_name: "uplink-1"
+          ip_assignment_spec:
+            resource_type: "StaticIpPoolSpec"
+            ip_pool_name: "NSX_TEP_POOL"
+          # vmk_install_migration:
+          # - device_name: vmk0
+          #   destination_network_name: "ls_vmk_Mgmt"
+      transport_zone_endpoints:
+      - transport_zone_name: "TZ_Overlay"
+      - transport_zone_name: "TZ_Vlan"
+      state: present
+    # loop: "{{system_fabric|json_query('compute_transp_nodes[*]')|subelements('nics', 'skip_missing=True')}}"
+    loop: "{{system_fabric|json_query('compute_transp_nodes[*]')}}"
+    when: (item.switch_type == 'NVDS') and (item.transport_node_profile_name is defined) and (item.nics is defined)
 
 #################### to be tested in vsphere 7    -----> missing how to select vds7 name and vcenter!
   # - name: Create NSX-T transport node profile for clusters with VDS7
@@ -318,24 +318,73 @@
   #   when: (item.switch_type == 'VDS') and (item.transport_node_profile_name is defined) and (item.nics is defined) and (item.vcenter) and (item.cluster_name is defined) and (item.vds_name is defined)
 ####################
 
-  # - name: Create transport node collection
-  #   nsxt_transport_node_collections:
-  #     hostname: "{{nsxt_ip}}"
-  #     username: "{{nsx_username}}"
-  #     password: "{{nsx_password}}"
-  #     validate_certs: False
-  #     display_name: "TranspNode-{{item.cluster_name}}"
-  #     resource_type: "TransportNodeCollection"
-  #     description: "Transport Node {{item.cluster_name}}"
-  #     compute_manager_name: "{{item.vcenter}}"
-  #     cluster_name: "{{item.cluster_name}}"
-  #     transport_node_profile_name: "{{ item.transport_node_profile_name }}"
-  #     state: present
-  #   loop: "{{system_fabric|json_query('compute_transp_nodes[*]')}}"
-  #   when: (item.cluster_name is defined and item.cluster_name !='' ) and (item.transport_node_profile_name is defined) and (item.nics is defined)
+  - name: Create transport node collection/Cluster prep
+    nsxt_transport_node_collections:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      display_name: "TranspNode-{{item.cluster_name}}"
+      resource_type: "TransportNodeCollection"
+      description: "Transport Node {{item.cluster_name}}"
+      compute_manager_name: "{{item.vcenter}}"
+      cluster_name: "{{item.cluster_name}}"
+      transport_node_profile_name: "{{ item.transport_node_profile_name }}"
+      state: present
+    loop: "{{system_fabric|json_query('compute_transp_nodes[*]')}}"
+    when: (item.cluster_name is defined and item.cluster_name !='' ) and (item.transport_node_profile_name is defined) and (item.nics is defined)
 
 
-  # - name: Create Single Transport Nodes
+  - name: Create Single ESXi Transport Nodes with N-VDS
+    nsxt_transport_nodes:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      display_name: "{{ item.node_ip }}"
+      host_switch_spec:
+        resource_type: StandardHostSwitchSpec
+        host_switches:
+        - host_switch_profiles:
+          - name: "UplinkProfl-{{item.uplink_profile}}"
+            type: "UplinkHostSwitchProfile"
+          - name: LLDP [Send Packet Enabled]
+            type: LldpHostSwitchProfile
+          - name: nsx-default-nioc-hostswitch-profile
+            type: NiocProfile                      
+          host_switch_name: "NSXT-NVDS"
+          host_switch_mode: "STANDARD"
+          # transport_zone_endpoints:
+          # - transport_zone_name: "TZ_Overlay"
+          # - transport_zone_name: "TZ_Vlan"
+          is_migrate_pnics: "False"
+          pnics: "{{item.nics}}"
+          ip_assignment_spec:
+            resource_type: "StaticIpPoolSpec"
+            ip_pool_name: "NSX_TEP_POOL"
+          # vmk_install_migration:
+          # - device_name: vmk0
+          #   destination_network_name: "ls_vmk_Mgmt"
+      transport_zone_endpoints:
+      - transport_zone_name: "TZ_Overlay"
+      - transport_zone_name: "TZ_Vlan"
+      node_deployment_info:
+        resource_type: "HostNode"
+        display_name: "{{item.node_ip}}"
+        ip_addresses: ["{{item.node_ip}}"]
+        discovered_ip_addresses: ["{{item.node_ip}}"]
+        os_type: "ESXI"
+        managed_by_server: "{{item.vcenter}}"
+        # os_version: "6.5.0"
+        host_credential:
+          username: "{{esxi_username}}"
+          password: "{{esxi_password}}"
+        #   thumbprint: "e7fd7dd84267da10f991812ca62b2bedea3a4a62965396a04728da1e7f8e1cb9"
+      state: present
+    with_items: "{{system_fabric|json_query('compute_transp_nodes[*]'|default([]))}}"
+    when: (item.node_ip is defined) and (item.switch_type == 'NVDS') and (esxi_username is defined) and (esxi_password is defined)
+
+  # - name: Create Single ESXi Transport Nodes with VDS7
   #   nsxt_transport_nodes:
   #     hostname: "{{nsxt_ip}}"
   #     username: "{{nsx_username}}"
@@ -352,13 +401,14 @@
   #           type: LldpHostSwitchProfile
   #         - name: nsx-default-nioc-hostswitch-profile
   #           type: NiocProfile                      
-  #         host_switch_name: "NSXT-NVDS"
+  #         host_switch_name: "{{item.vds_name}}"
   #         host_switch_mode: "STANDARD"
+  #         host_switch_type: "VDS"
   #         # transport_zone_endpoints:
   #         # - transport_zone_name: "TZ_Overlay"
   #         # - transport_zone_name: "TZ_Vlan"
   #         is_migrate_pnics: "False"
-  #         pnics: "{{item.nics}}"
+  #         uplinks: "{{item.nics}}"
   #         ip_assignment_spec:
   #           resource_type: "StaticIpPoolSpec"
   #           ip_pool_name: "NSX_TEP_POOL"
@@ -382,7 +432,7 @@
   #       #   thumbprint: "e7fd7dd84267da10f991812ca62b2bedea3a4a62965396a04728da1e7f8e1cb9"
   #     state: present
   #   with_items: "{{system_fabric|json_query('compute_transp_nodes[*]'|default([]))}}"
-  #   when: (item.node_ip is defined) and (item.switch_type == 'VDS') and (esxi_username is defined) and (esxi_password is defined)
+  #   when: (item.node_ip is defined) and (item.switch_type == 'VDS') and (esxi_username is defined) and (esxi_password is defined) and (item.vds_name is defined)
 
   # - name: Gather list of discovered Transport nodes
   #   nsxt_rest:
@@ -395,110 +445,110 @@
   #     content:
   #   register: list_tn
 
-  # - name: Save NSX-T DNS server IP as variable
-  #   nsxt_rest:
-  #     hostname: "{{nsxt_ip}}"
-  #     username: "{{nsx_username}}"
-  #     password: "{{nsx_password}}"
-  #     validate_certs: False
-  #     method: get
-  #     path: /api/v1/node/network/name-servers
-  #     content:
-  #   register: nsxtm_dns
+  - name: Save NSX-T DNS server IP as variable
+    nsxt_rest:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      method: get
+      path: /api/v1/node/network/name-servers
+      content:
+    register: nsxtm_dns
 
-  # - name: Save NSX-T NTP server IP as variable
-  #   nsxt_rest:
-  #     hostname: "{{nsxt_ip}}"
-  #     username: "{{nsx_username}}"
-  #     password: "{{nsx_password}}"
-  #     validate_certs: False
-  #     method: get
-  #     path: /api/v1/node/services/ntp
-  #     content:
-  #   register: nsxtm_ntp
+  - name: Save NSX-T NTP server IP as variable
+    nsxt_rest:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      method: get
+      path: /api/v1/node/services/ntp
+      content:
+    register: nsxtm_ntp
 
-  # - name: Create edge VMs
-  #   nsxt_transport_nodes:
-  #     hostname: "{{nsxt_ip}}"
-  #     username: "{{nsx_username}}"
-  #     password: "{{nsx_password}}"
-  #     validate_certs: False
-  #     display_name: "{{ item.edge_name }}"
-  #     host_switch_spec:
-  #       resource_type: StandardHostSwitchSpec
-  #       host_switches:
-  #       - host_switch_profiles:
-  #         - name: "UplinkProfl-{{item.uplink_profile}}"
-  #           type: "UplinkHostSwitchProfile"                
-  #         host_switch_name: "NSXT-NVDS"
-  #         host_switch_mode: "STANDARD"
-  #         # transport_zone_endpoints:
-  #         # - transport_zone_name: "TZ_Overlay"
-  #         # - transport_zone_name: "TZ_Vlan"
-  #         is_migrate_pnics: "False"
-  #         pnics: "{{item.nics}}"
-  #         ip_assignment_spec:
-  #           resource_type: "StaticIpPoolSpec"
-  #           ip_pool_name: "NSX_TEP_POOL"
-  #     transport_zone_endpoints:
-  #     - transport_zone_name: "TZ_Overlay"
-  #     - transport_zone_name: "TZ_Vlan"
-  #     - transport_zone_name: "TZ_Edge_Peering_Vlan"
-  #     node_deployment_info:
-  #       resource_type: "EdgeNode"
-  #       display_name: "{{item.edge_name}}"
-  #       ip_addresses:
-  #       node_settings:
-  #         dns_servers: "{{nsxtm_dns.body.name_servers}}"
-  #         enable_ssh: True
-  #         ntp_servers: "{{nsxtm_ntp.body.service_properties.servers}}"
-  #       deployment_config:
-  #         form_factor: "{{item.edge_vm_size|upper}}"
-  #         node_user_settings:
-  #           cli_password: "{{ edge_vm_root_password|default(nsx_password) }}"
-  #           root_password: "{{ edge_vm_root_password|default(nsx_password) }}"
-  #         vm_deployment_config:
-  #           placement_type: VsphereDeploymentConfig
-  #           vc_name: "{{ item.vcenter }}"
-  #           vc_username: "{{ vcenter_user}}"
-  #           vc_password: "{{ vcenter_pass }}"        
-  #           data_networks: "{{item.edge_vm_networks}}"
+  - name: Create edge VMs
+    nsxt_transport_nodes:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      display_name: "{{ item.edge_name }}"
+      host_switch_spec:
+        resource_type: StandardHostSwitchSpec
+        host_switches:
+        - host_switch_profiles:
+          - name: "UplinkProfl-{{item.uplink_profile}}"
+            type: "UplinkHostSwitchProfile"                
+          host_switch_name: "NSXT-NVDS"
+          host_switch_mode: "STANDARD"
+          # transport_zone_endpoints:
+          # - transport_zone_name: "TZ_Overlay"
+          # - transport_zone_name: "TZ_Vlan"
+          is_migrate_pnics: "False"
+          pnics: "{{item.nics}}"
+          ip_assignment_spec:
+            resource_type: "StaticIpPoolSpec"
+            ip_pool_name: "NSX_TEP_POOL"
+      transport_zone_endpoints:
+      - transport_zone_name: "TZ_Overlay"
+      - transport_zone_name: "TZ_Vlan"
+      - transport_zone_name: "TZ_Edge_Peering_Vlan"
+      node_deployment_info:
+        resource_type: "EdgeNode"
+        display_name: "{{item.edge_name}}"
+        ip_addresses:
+        node_settings:
+          dns_servers: "{{nsxtm_dns.body.name_servers}}"
+          enable_ssh: True
+          ntp_servers: "{{nsxtm_ntp.body.service_properties.servers}}"
+        deployment_config:
+          form_factor: "{{item.edge_vm_size|upper}}"
+          node_user_settings:
+            cli_password: "{{ edge_vm_root_password|default(nsx_password) }}"
+            root_password: "{{ edge_vm_root_password|default(nsx_password) }}"
+          vm_deployment_config:
+            placement_type: VsphereDeploymentConfig
+            vc_name: "{{ item.vcenter }}"
+            vc_username: "{{ vcenter_user}}"
+            vc_password: "{{ vcenter_pass }}"        
+            data_networks: "{{item.edge_vm_networks}}"
 
-  #           management_network: "{{ item.edge_vm_mgmt_pg}}"
-  #           management_port_subnets:
-  #           - ip_addresses:
-  #             - "{{ item.edge_vm_mgmt_ip|ipaddr('address') }}"
-  #             prefix_length: "{{ item.edge_vm_mgmt_ip|ipaddr('prefix') }}"
-  #           default_gateway_addresses: 
-  #           - "{{item.edge_vm_ip_gateway|ipaddr}}"
-  #           hostname: "{{ item.edge_name}}"
-  #           compute: "{{ item.edge_vsphere_cluster }}"
-  #           storage: "{{ item.edge_vm_datastore }}"
-  #           # host: "{{ edge_node1_vesxi }}"        
-  #     state: present
-  #   loop: "{{system_fabric|json_query('edge_transp_nodes[*]')}}"
-  #   when: (item.edge_name is defined) and (item.edge_vm_fqdn is defined) and (item.edge_vsphere_cluster is defined) and (item.edge_vm_mgmt_ip|ipaddr('address/prefix')) and (item.edge_vm_mgmt_pg is defined) and (item.edge_vm_networks is defined)
+            management_network: "{{ item.edge_vm_mgmt_pg}}"
+            management_port_subnets:
+            - ip_addresses:
+              - "{{ item.edge_vm_mgmt_ip|ipaddr('address') }}"
+              prefix_length: "{{ item.edge_vm_mgmt_ip|ipaddr('prefix') }}"
+            default_gateway_addresses: 
+            - "{{item.edge_vm_ip_gateway|ipaddr}}"
+            hostname: "{{ item.edge_name}}"
+            compute: "{{ item.edge_vsphere_cluster }}"
+            storage: "{{ item.edge_vm_datastore }}"
+            # host: "{{ edge_node1_vesxi }}"        
+      state: present
+    loop: "{{system_fabric|json_query('edge_transp_nodes[*]')}}"
+    when: (item.edge_name is defined) and (item.edge_vm_fqdn is defined) and (item.edge_vsphere_cluster is defined) and (item.edge_vm_mgmt_ip|ipaddr('address/prefix')) and (item.edge_vm_mgmt_pg is defined) and (item.edge_vm_networks is defined)
 
-  # - name: Create NSX-T Edge clusters and assign edges to them
-  #   nsxt_edge_clusters:
-  #     hostname: "{{nsxt_ip}}"
-  #     username: "{{nsx_username}}"
-  #     password: "{{nsx_password}}"
-  #     validate_certs: False
-  #     display_name: "{{ item.edge_cluster_name }}"
-  #     cluster_profile_bindings:
-  #     - profile_name: "nsx-default-edge-high-availability-profile"
-  #       resource_type: EdgeHighAvailabilityProfile          
-  #     members: "{{item.members}}"
-  #     # - transport_node_name: "{{ edge_node1 }}"
-  #     # - transport_node_name: "{{ edge_node2 }}"
-  #     state: present
-  #   register: edge_cluster
-  #   loop: "{{system_fabric|json_query('edge_clusters[*]')}}"
-  #   when:
-  #     - system_fabric.edge_clusters is defined
-  #     - item.edge_cluster_name is defined
-  #     - item.members is defined
+  - name: Create NSX-T Edge clusters and assign edges to them
+    nsxt_edge_clusters:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      display_name: "{{ item.edge_cluster_name }}"
+      cluster_profile_bindings:
+      - profile_name: "nsx-default-edge-high-availability-profile"
+        resource_type: EdgeHighAvailabilityProfile          
+      members: "{{item.members}}"
+      # - transport_node_name: "{{ edge_node1 }}"
+      # - transport_node_name: "{{ edge_node2 }}"
+      state: present
+    register: edge_cluster
+    loop: "{{system_fabric|json_query('edge_clusters[*]')}}"
+    when:
+      - system_fabric.edge_clusters is defined
+      - item.edge_cluster_name is defined
+      - item.members is defined
 
   - name: Add named teaming policies to Edge Vlan TZ
     nsxt_transport_zones:
@@ -508,6 +558,7 @@
       validate_certs: False
       resource_type: "TransportZone"
       display_name: "TZ_Edge_Peering_Vlan"
+      description: "NSX configured Edge_Peering_Vlan Transport Zone"
       host_switch_mode: "STANDARD"
       transport_type: "VLAN"
       host_switch_name: "NSXT-NVDS"
@@ -538,6 +589,6 @@
         uplink_teaming_policy_name: "{{ item.named_teaming|default(omit) }}"
     loop: "{{l2_segments}}"
 #    when: l2_segments is defined and item.named_teaming is defined
-    when: l2_segments is defined and item.tz is defined    
+    when: (l2_segments is defined) and (item.tz is defined) and (item.named_teaming)    
     vars: 
-      ansible_python_interpreter: /usr/bin/python3    
+      ansible_python_interpreter: /usr/bin/python3
