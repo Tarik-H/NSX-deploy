@@ -495,6 +495,27 @@
       content:
     register: nsxtm_ntp
 
+  - name: Create NSX-T Edge clusters and assign edges to them
+    nsxt_edge_clusters:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      display_name: "{{ item.edge_cluster_name }}"
+      cluster_profile_bindings:
+      - profile_name: "nsx-default-edge-high-availability-profile"
+        resource_type: EdgeHighAvailabilityProfile          
+      members: "{{item.members}}"
+      # - transport_node_name: "{{ edge_node1 }}"
+      # - transport_node_name: "{{ edge_node2 }}"
+      state: present
+    register: edge_cluster
+    loop: "{{system_fabric|json_query('edge_clusters[*]')}}"
+    when:
+      - system_fabric.edge_clusters is defined
+      - item.edge_cluster_name is defined
+      - item.members is defined
+
   - name: Create edge VMs
     nsxt_transport_nodes:
       hostname: "{{nsxt_ip}}"
@@ -556,27 +577,6 @@
       state: present
     loop: "{{system_fabric|json_query('edge_transp_nodes[*]')}}"
     when: (item.edge_name is defined) and (item.edge_vm_fqdn is defined) and (item.edge_vsphere_cluster is defined) and (item.edge_vm_mgmt_ip|ipaddr('address/prefix')) and (item.edge_vm_mgmt_pg is defined) and (item.edge_vm_networks is defined)
-
-  - name: Create NSX-T Edge clusters and assign edges to them
-    nsxt_edge_clusters:
-      hostname: "{{nsxt_ip}}"
-      username: "{{nsx_username}}"
-      password: "{{nsx_password}}"
-      validate_certs: False
-      display_name: "{{ item.edge_cluster_name }}"
-      cluster_profile_bindings:
-      - profile_name: "nsx-default-edge-high-availability-profile"
-        resource_type: EdgeHighAvailabilityProfile          
-      members: "{{item.members}}"
-      # - transport_node_name: "{{ edge_node1 }}"
-      # - transport_node_name: "{{ edge_node2 }}"
-      state: present
-    register: edge_cluster
-    loop: "{{system_fabric|json_query('edge_clusters[*]')}}"
-    when:
-      - system_fabric.edge_clusters is defined
-      - item.edge_cluster_name is defined
-      - item.members is defined
 
   - name: Add named teaming policies to Edge Vlan TZ
     nsxt_transport_zones:
