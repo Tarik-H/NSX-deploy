@@ -88,7 +88,7 @@
       validate_certs: False
       method: put
       path: /api/v1/node/users/10000
-      content: |
+      content:
         {
           "userid": 10000,
           "username": "admin",
