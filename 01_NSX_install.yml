@@ -86,7 +86,7 @@
       username: "{{nsx_username}}"
       password: "{{nsx_password}}"
       validate_certs: False
-      method: get
+      method: put
       path: /api/v1/node/users/10000
       content: |
         {
