@@ -565,7 +565,7 @@
             vc_username: "{{ vcenter_user}}"
             vc_password: "{{ vcenter_pass }}"        
             data_networks: "{{item.edge_vm_networks}}"
-            
+
             management_network: "{{ item.edge_vm_mgmt_pg}}"
             management_port_subnets:  
             - ip_addresses:
@@ -580,8 +580,8 @@
       state: present
     loop: "{{system_fabric|json_query('edge_transp_nodes[*]')}}"
     when: (item.edge_name is defined) and (item.edge_vm_fqdn is defined) and (item.edge_vsphere_cluster is defined) and (item.edge_vm_mgmt_ip|ipaddr('address/prefix')) and (item.edge_vm_mgmt_pg is defined) and (item.edge_vm_networks is defined)
-    vars: 
-      ansible_python_interpreter: /usr/bin/python3
+    # vars: 
+    #   ansible_python_interpreter: /usr/bin/python3
 
   - name: Create NSX-T Edge clusters and assign edges to them
     nsxt_edge_clusters:
