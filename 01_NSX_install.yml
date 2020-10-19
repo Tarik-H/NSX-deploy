@@ -80,23 +80,49 @@
   #     msg: "{{cpu_mgr}}"
 
 
+  # - name: Disable password expiration for admin user
+  #   nsxt_rest:
+  #     hostname: "{{nsxt_ip}}"
+  #     username: "{{nsx_username}}"
+  #     password: "{{nsx_password}}"
+  #     validate_certs: False
+  #     method: put
+  #     path: /api/v1/node/users/10000
+  #     content:
+  #       {
+  #         "userid": 10000,
+  #         "username": "admin",
+  #         "password_change_frequency": 0
+  #       }
+  #   vars: 
+  #     ansible_python_interpreter: /usr/bin/python3  
+
   - name: Disable password expiration for admin user
-    nsxt_rest:
-      hostname: "{{nsxt_ip}}"
-      username: "{{nsx_username}}"
-      password: "{{nsx_password}}"
-      validate_certs: False
+    uri:
+      url: https://{{nsxt_ip}}/api/v1/node/users/10000
+      validate_certs: no
+      timeout: 5
+      force_basic_auth: yes
+      url_username: "{{nsx_username}}"
+      url_password: "{{nsx_password}}"
       method: put
-      path: /api/v1/node/users/10000
-      content:
+      body_format: json
+      return_content: yes
+      status_code: 200
+      body: 
         {
           "userid": 10000,
           "username": "admin",
           "password_change_frequency": 0
         }
-    vars: 
-      ansible_python_interpreter: /usr/bin/python3  
-
+    register: result
+    # until: result.json.result_count == 0
+    # retries: 180
+    # delay: 30
+    # when: 
+    #   - nsxlicensekey.stat.exists == true
+    #   - deploy_nsxt == true
+    #   - deploy_nsxt_edge == true
 
 
   - name: Create transport zone
