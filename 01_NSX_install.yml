@@ -533,7 +533,7 @@
             type: "UplinkHostSwitchProfile"                
           host_switch_name: "NSXT-NVDS"
           host_switch_mode: "STANDARD"
-          transport_zone_endpoints:
+          # transport_zone_endpoints:
           # - transport_zone_name: "TZ_Overlay"
           # - transport_zone_name: "TZ_Vlan"
           # - transport_zone_name: "TZ_Edge_Peering_Vlan"
@@ -549,7 +549,7 @@
       node_deployment_info:
         resource_type: "EdgeNode"
         display_name: "{{item.edge_name}}"
-        # ip_addresses:
+        ip_addresses:
         node_settings:
           dns_servers: "{{nsxtm_dns.body.name_servers}}"
           enable_ssh: True
