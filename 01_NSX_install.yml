@@ -549,7 +549,7 @@
       node_deployment_info:
         resource_type: "EdgeNode"
         display_name: "{{item.edge_name}}"
-        ip_addresses:
+        # ip_addresses:
         node_settings:
           dns_servers: "{{nsxtm_dns.body.name_servers}}"
           enable_ssh: True
