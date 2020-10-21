@@ -592,8 +592,9 @@
         deployment_config:
           form_factor: "{{item.edge_vm_size|upper}}"
           node_user_settings:
-            cli_password: "{{edge_vm_root_password|default(nsx_password)}}"
-            root_password: "{{edge_vm_root_password|default(nsx_password)}}"
+            cli_password: "{{edge_vm_root_password|default(nsx_password)|string}}"
+            cli_username: "admin"
+            root_password: "{{edge_vm_root_password|default(nsx_password)|string}}"
           vm_deployment_config:
             data_networks: "{{item.edge_vm_networks}}"
             default_gateway_addresses: 
