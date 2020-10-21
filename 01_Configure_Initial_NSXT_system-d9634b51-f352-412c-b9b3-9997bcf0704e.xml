@@ -64,7 +64,7 @@ e.g. 172.31.12.1/25 or 192.168.10.254/24]]></description>
         <option name='edge_vm_root_password' secure='true' valueExposed='true'>
           <description><![CDATA[Choose the Edge VM users (root, audit and admin) password otherwise it will use the same as NSX-T Manager password<br>
 **Important note:** don't forget to configure the host/cluster hosting the edges with Trunk PG on their VDS, to be able to transport overlay and North-South peering Vlans.]]></description>
-          <label>Edge VM root password (Optional)</label>
+          <label>Edge VM admin &amp; root password (Optional)</label>
         </option>
       </options>
     </context>

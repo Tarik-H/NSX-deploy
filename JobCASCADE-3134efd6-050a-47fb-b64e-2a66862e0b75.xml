@@ -1,0 +1,27 @@
+<joblist>
+  <job>
+    <context>
+      <options preserveOrder='true'>
+        <option enforcedvalues='true' name='option1' required='true' valuesUrl='file:/var/rundeck/projects/NSX-deploy/services.json' />
+        <option enforcedvalues='true' name='option2' valuesUrl='file:/var/rundeck/projects/NSX-deploy/${option.option1.value}' />
+        <option enforcedvalues='true' name='option3' values='n/a,yes,no' valuesListDelimiter=',' />
+        <option name='option4' />
+      </options>
+    </context>
+    <defaultTab>nodes</defaultTab>
+    <description></description>
+    <executionEnabled>true</executionEnabled>
+    <id>3134efd6-050a-47fb-b64e-2a66862e0b75</id>
+    <loglevel>INFO</loglevel>
+    <name>JobCASCADE</name>
+    <nodeFilterEditable>false</nodeFilterEditable>
+    <plugins />
+    <scheduleEnabled>true</scheduleEnabled>
+    <sequence keepgoing='false' strategy='node-first'>
+      <command>
+        <exec>echo "The selected service is: ${option.option2}"</exec>
+      </command>
+    </sequence>
+    <uuid>3134efd6-050a-47fb-b64e-2a66862e0b75</uuid>
+  </job>
+</joblist>
