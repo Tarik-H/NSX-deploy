@@ -570,7 +570,7 @@
   - debug:
       msg: "{{shared_compute|lower}}"
   - debug:
-      msg: "{{edge_overlay_vlan}}"
+      msg: "{{edge_overlay_vlan != 0}}"
   - debug:
       msg: "{{edge_overlay_subnet}}"
 
