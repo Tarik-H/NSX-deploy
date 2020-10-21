@@ -454,7 +454,6 @@
   #     content:
   #   register: list_tn
 
-###################################### Prep for Edge VM
   - name: Save NSX-T NTP server IP as variable
     nsxt_rest:
       hostname: "{{nsxt_ip}}"
