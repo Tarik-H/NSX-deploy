@@ -568,7 +568,7 @@
     when: system_fabric.edge_transp_nodes is defined
 
   - debug:
-      msg: "{{shared_compute}}"
+      msg: "{{shared_compute|str}}"
   - debug:
       msg: "{{edge_overlay_vlan|int}}"
   - debug:
