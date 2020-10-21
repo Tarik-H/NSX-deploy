@@ -443,55 +443,46 @@
   #   with_items: "{{system_fabric|json_query('compute_transp_nodes[*]'|default([]))}}"
   #   when: (item.node_ip is defined) and (item.switch_type == 'VDS') and (esxi_username is defined) and (esxi_password is defined) and (item.vds_name is defined)
 
-  # - name: Gather list of discovered Transport nodes
-  #   nsxt_rest:
-  #     hostname: "{{nsxt_ip}}"
-  #     username: "{{nsx_username}}"
-  #     password: "{{nsx_password}}"
-  #     validate_certs: False
-  #     method: get
-  #     path: /api/v1/fabric/discovered-nodes
-  #     content:
-  #   register: list_tn
+################## Edge vm prep
 
-  # - name: Save NSX-T NTP server IP as variable
-  #   nsxt_rest:
-  #     hostname: "{{nsxt_ip}}"
-  #     username: "{{nsx_username}}"
-  #     password: "{{nsx_password}}"
-  #     validate_certs: False
-  #     method: get
-  #     path: /api/v1/node/services/ntp
-  #     content:
-  #   register: nsxtm_ntp
+  - name: Save NSX-T NTP server IP as variable
+    nsxt_rest:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      method: get
+      path: /api/v1/node/services/ntp
+      content:
+    register: nsxtm_ntp
 
-  # - name: Save NSX-T DNS server IP as variable
-  #   nsxt_rest:
-  #     hostname: "{{nsxt_ip}}"
-  #     username: "{{nsx_username}}"
-  #     password: "{{nsx_password}}"
-  #     validate_certs: False
-  #     method: get
-  #     path: /api/v1/node/network/name-servers
-  #     content:
-  #   register: nsxtm_dns
+  - name: Save NSX-T DNS server IP as variable
+    nsxt_rest:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      method: get
+      path: /api/v1/node/network/name-servers
+      content:
+    register: nsxtm_dns
 
 
-  # - name: Update static Edge TEP Uplink Profile in case of shared compute cluster 
-  #   nsxt_uplink_profiles:
-  #     hostname: "{{nsxt_ip}}"
-  #     username: "{{nsx_username}}"
-  #     password: "{{nsx_password}}"
-  #     validate_certs: False
-  #     display_name: "UplinkProfl-{{item.name}}"
-  #     # mtu: 1600
-  #     resource_type: "UplinkHostSwitchProfile"
-  #     state: "present"
-  #     teaming: "{{item.tm}}"
-  #     transport_vlan: "{{edge_overlay_vlan|default(overlay_vlan)}}"
-  #     named_teamings: "{{item.ntm|default(omit)}}"
-  #   loop: "{{uplink_prof_list}}"
-  #   when: (shared_compute|lower == 'true') and (edge_overlay_vlan != 0) and (edge_overlay_subnet|ipaddr) and ('edge' in item.name) 
+  - name: Update static Edge TEP Uplink Profile in case of shared compute cluster 
+    nsxt_uplink_profiles:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      display_name: "UplinkProfl-{{item.name}}"
+      # mtu: 1600
+      resource_type: "UplinkHostSwitchProfile"
+      state: "present"
+      teaming: "{{item.tm}}"
+      transport_vlan: "{{edge_overlay_vlan|default(overlay_vlan)}}"
+      named_teamings: "{{item.ntm|default(omit)}}"
+    loop: "{{uplink_prof_list}}"
+    when: (shared_compute|lower == 'true') and (edge_overlay_vlan != 0) and (edge_overlay_subnet|ipaddr) and ('edge' in item.name) 
 
   - name: Create Edge overlay TEP IP Pool in case of shared compute cluster (policy)
     nsxt_policy_ip_pool:
@@ -682,3 +673,14 @@
 #     msg: "{{item.1}}"
 #   loop: "{{uplinkprofs| subelements('active-uplinks', 'skip_missing=True')}}"
 # #####################################
+
+  # - name: Gather list of discovered Transport nodes
+  #   nsxt_rest:
+  #     hostname: "{{nsxt_ip}}"
+  #     username: "{{nsx_username}}"
+  #     password: "{{nsx_password}}"
+  #     validate_certs: False
+  #     method: get
+  #     path: /api/v1/fabric/discovered-nodes
+  #     content:
+  #   register: list_tn
