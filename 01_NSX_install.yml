@@ -547,7 +547,10 @@
         - "RIGHT-TOR-Router"
     when: system_fabric.edge_transp_nodes is defined
 
-  
+  - name: Copy NSX-T pass to edge vm pass in case it is omitted
+    set_fact:
+      temp_edge_vm_pass: "{{nsx_password}}"
+    when: edge_vm_root_password|bool
 
 ###################################### Deploying Edge VM    
 ######################################
@@ -592,9 +595,9 @@
         deployment_config:
           form_factor: "{{item.edge_vm_size|upper}}"
           node_user_settings:
-            cli_password: "{{edge_vm_root_password|default(nsx_password)|string}}"
+            cli_password: "{{edge_vm_root_password|default(nsx_password)}}"
             cli_username: "admin"
-            root_password: "{{edge_vm_root_password|default(nsx_password)|string}}"
+            root_password: "{{edge_vm_root_password|default(nsx_password)}}"
           vm_deployment_config:
             data_networks: "{{item.edge_vm_networks}}"
             default_gateway_addresses: 
