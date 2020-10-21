@@ -688,3 +688,11 @@
 #     when: (l2_segments is defined) and (item.tz is defined) and (item.named_teaming)    
 #     vars: 
 #       ansible_python_interpreter: /usr/bin/python3
+
+
+
+######################################
+##                             combination with when
+## when: not (security is defined or kernel is defined or specified_packages is defined) and ansible_os_family == "RedHat"
+##
+######################################
