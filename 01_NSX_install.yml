@@ -87,6 +87,10 @@
   #   debug:
   #     msg: "{{cpu_mgr}}"
 
+  - name: test to see var content
+    debug:
+      msg: "{{nsx_password}}"
+
 
   # - name: Disable password expiration for admin user
   #   nsxt_rest:
