@@ -102,8 +102,8 @@
   #         "username": "admin",
   #         "password_change_frequency": 0
   #       }
-  #   vars: 
-  #     ansible_python_interpreter: /usr/bin/python3  
+  #   vars:
+  #     ansible_python_interpreter: /usr/bin/python3
 
   - name: Disable password expiration for admin user
     uri:
@@ -117,7 +117,7 @@
       body_format: json
       return_content: yes
       status_code: 200
-      body: 
+      body:
         {
           "userid": 10000,
           "username": "admin",
@@ -188,8 +188,8 @@
 # #   #         cidr: "{{item|ipaddr('network/prefix')}}"
 # #   #         gateway_ip: "{{item|ipaddr('address')}}"
 # #   #   loop: "{{system_fabric.tep_pool_gws}}"
-# #   #   when: system_fabric.tep_pool_gws is defined          
-# #   #   vars: 
+# #   #   when: system_fabric.tep_pool_gws is defined
+# #   #   vars:
 # #   #     ansible_python_interpreter: /usr/bin/python3
 
 
@@ -202,7 +202,7 @@
       id: NSX_TEP_POOL
       display_name: NSX_TEP_POOL
       state: "present"
-      pool_static_subnets:      
+      pool_static_subnets:
         [
         {
           "display_name": "TEP_subnet_{{item|ipaddr('network')}}",
@@ -218,8 +218,8 @@
         }
        ]
     loop: "{{system_fabric.tep_pool_gws}}"
-    when: system_fabric.tep_pool_gws is defined       
-    vars: 
+    when: system_fabric.tep_pool_gws is defined
+    vars:
       ansible_python_interpreter: /usr/bin/python3
 
 
@@ -258,7 +258,7 @@
           - name: LLDP [Send Packet Enabled]
             type: LldpHostSwitchProfile
           - name: nsx-default-nioc-hostswitch-profile
-            type: NiocProfile                      
+            type: NiocProfile
           host_switch_name: "NSXT-NVDS"
           host_switch_mode: "STANDARD"
           is_migrate_pnics: "False"
@@ -299,7 +299,7 @@
   #         - name: LLDP [Send Packet Enabled]
   #           type: LldpHostSwitchProfile
   #         - name: nsx-default-nioc-hostswitch-profile
-  #           type: NiocProfile                      
+  #           type: NiocProfile
   #         host_switch_name: "{{item.vds_name}}"
   #         host_switch_mode: "STANDARD"
   #         host_switch_type: "VDS"
@@ -360,7 +360,7 @@
           - name: LLDP [Send Packet Enabled]
             type: LldpHostSwitchProfile
           - name: nsx-default-nioc-hostswitch-profile
-            type: NiocProfile                      
+            type: NiocProfile
           host_switch_name: "NSXT-NVDS"
           host_switch_mode: "STANDARD"
           # transport_zone_endpoints:
@@ -409,7 +409,7 @@
   #         - name: LLDP [Send Packet Enabled]
   #           type: LldpHostSwitchProfile
   #         - name: nsx-default-nioc-hostswitch-profile
-  #           type: NiocProfile                      
+  #           type: NiocProfile
   #         host_switch_name: "{{item.vds_name}}"
   #         host_switch_mode: "STANDARD"
   #         host_switch_type: "VDS"
@@ -444,7 +444,6 @@
   #   when: (item.node_ip is defined) and (item.switch_type == 'VDS') and (esxi_username is defined) and (esxi_password is defined) and (item.vds_name is defined)
 
 ################## Edge vm prep
-
   - name: Save NSX-T NTP server IP as variable
     nsxt_rest:
       hostname: "{{nsxt_ip}}"
@@ -468,7 +467,7 @@
     register: nsxtm_dns
 
 
-  - name: Update static Edge TEP Uplink Profile in case of shared compute cluster 
+  - name: Update static Edge TEP Uplink Profile in case of shared compute cluster
     nsxt_uplink_profiles:
       hostname: "{{nsxt_ip}}"
       username: "{{nsx_username}}"
@@ -482,7 +481,7 @@
       transport_vlan: "{{edge_overlay_vlan|default(overlay_vlan)}}"
       named_teamings: "{{item.ntm|default(omit)}}"
     loop: "{{uplink_prof_list}}"
-    when: (shared_compute|lower == 'true') and (edge_overlay_vlan != 0) and (edge_overlay_subnet|ipaddr) and ('edge' in item.name) 
+    when: (shared_compute|lower == 'true') and (edge_overlay_vlan != 0) and (edge_overlay_subnet|ipaddr) and ('edge' in item.name)
 
   - name: Create Edge overlay TEP IP Pool in case of shared compute cluster (policy)
     nsxt_policy_ip_pool:
@@ -493,7 +492,7 @@
       id: EDGE_TEP_POOL_SHARED_COMPUTE
       display_name: EDGE_TEP_POOL_SHARED_COMPUTE
       state: "present"
-      pool_static_subnets:      
+      pool_static_subnets:
         [
         {
           "display_name": "TEP_subnet_{{edge_overlay_subnet|ipaddr('network')}}",
@@ -509,7 +508,7 @@
         }
        ]
     when: (shared_compute|lower == 'true') and (edge_overlay_vlan != 0) and (edge_overlay_subnet|ipaddr)
-    vars: 
+    vars:
       ansible_python_interpreter: /usr/bin/python3
 
   - name: Add named teaming policies to Edge Vlan TZ
@@ -527,7 +526,7 @@
       is_default: "false"
       nested_nsx: "false"
       state: "present"
-      uplink_teaming_policy_names: 
+      uplink_teaming_policy_names:
         - "LEFT-TOR-Router"
         - "RIGHT-TOR-Router"
     when: system_fabric.edge_transp_nodes is defined
@@ -541,7 +540,7 @@
     debug:
       msg: "{{temp_edge_vm_pass}}"
 
-###################################### Deploying Edge VM    
+###################################### Deploying Edge VM
 ######################################
 
 
@@ -590,25 +589,25 @@
             root_password: "{{temp_edge_vm_pass}}"
           vm_deployment_config:
             data_networks: "{{item.edge_vm_networks}}"
-            default_gateway_addresses: 
+            default_gateway_addresses:
               - "{{item.edge_vm_ip_gateway|ipaddr}}"
-            management_network: "{{ item.edge_vm_mgmt_pg}}"              
-            management_port_subnets:  
+            management_network: "{{ item.edge_vm_mgmt_pg}}"
+            management_port_subnets:
               - ip_addresses:
                   - "{{ item.edge_vm_mgmt_ip|ipaddr('address') }}"
-                prefix_length: "{{ item.edge_vm_mgmt_ip|ipaddr('prefix') }}"  
+                prefix_length: "{{ item.edge_vm_mgmt_ip|ipaddr('prefix') }}"
             placement_type: "VsphereDeploymentConfig"
             reservation_info:
               memory_reservation:
                 reservation_percentage: 0
-              cpu_reservation: {"reservation_in_shares":"LOW_PRIORITY"}          
+              cpu_reservation: {"reservation_in_shares":"LOW_PRIORITY"}
             vc_name: "{{ item.vcenter }}"
             vc_username: "{{ vcenter_user}}"
-            vc_password: "{{ vcenter_pass }}"        
+            vc_password: "{{ vcenter_pass }}"
             hostname: "{{ item.edge_name}}"
             compute: "{{ item.edge_vsphere_cluster }}"
             storage: "{{ item.edge_vm_datastore }}"
-            # host: "{{ edge_node1_vesxi }}"        
+            # host: "{{ edge_node1_vesxi }}"
       state: present
     loop: "{{system_fabric|json_query('edge_transp_nodes[*]')}}"
     when: (item.edge_name is defined) and (item.edge_vm_fqdn is defined) and (item.edge_vsphere_cluster is defined) and (item.edge_vm_mgmt_ip|ipaddr('address/prefix')) and (item.edge_vm_mgmt_pg is defined) and (item.edge_vm_networks is defined)
@@ -623,7 +622,7 @@
       display_name: "{{ item.edge_cluster_name }}"
       cluster_profile_bindings:
       - profile_name: "nsx-default-edge-high-availability-profile"
-        resource_type: EdgeHighAvailabilityProfile          
+        resource_type: EdgeHighAvailabilityProfile
       members: "{{item.members}}"
       # - transport_node_name: "{{ edge_node1 }}"
       # - transport_node_name: "{{ edge_node2 }}"
@@ -654,8 +653,8 @@
         uplink_teaming_policy_name: "{{ item.named_teaming|default(omit) }}"
     loop: "{{l2_segments}}"
 #    when: l2_segments is defined and item.named_teaming is defined
-    when: (l2_segments is defined) and (item.tz is defined) and (item.named_teaming)    
-    vars: 
+    when: (l2_segments is defined) and (item.tz is defined) and (item.named_teaming)
+    vars:
       ansible_python_interpreter: /usr/bin/python3
 
 
