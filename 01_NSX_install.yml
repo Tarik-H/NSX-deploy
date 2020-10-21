@@ -89,7 +89,7 @@
 
   - name: test to see var content
     debug:
-      msg: "{{mono|default(nsx_password)}}"
+      msg: "{{ mono|default(nsx_password) }}"
 
 
   # - name: Disable password expiration for admin user
@@ -592,8 +592,9 @@
         deployment_config:
           form_factor: "{{item.edge_vm_size|upper}}"
           node_user_settings:
-            cli_password: "{{ edge_vm_root_password|default(nsx_password) }}"
-            root_password: "{{ edge_vm_root_password|default(nsx_password) }}"
+            cli_password: "{{edge_vm_root_password|d(nsx_password)}}"test
+            
+            root_password: "{{edge_vm_root_password|d(nsx_password)}}"
           vm_deployment_config:
             data_networks: "{{item.edge_vm_networks}}"
             default_gateway_addresses: 
