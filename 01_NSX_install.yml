@@ -664,7 +664,10 @@
 ######################################
 ##                             combination with when
 ## when: not (security is defined or kernel is defined or specified_packages is defined) and ansible_os_family == "RedHat"
-##
+##                                 becomes
+#  when:
+#     - '"RedHat" == "RedHat"'
+#     - security|d('') != '' or kernel|d('') != '' or specified_packages|d('') != ''
 
 #   debug:
 #     msg: "{{item.0}}"
