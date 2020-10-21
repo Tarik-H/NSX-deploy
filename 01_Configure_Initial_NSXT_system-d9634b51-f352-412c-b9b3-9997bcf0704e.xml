@@ -40,15 +40,15 @@ e.g. 172.31.12.1/25 or 192.168.10.254/24]]></description>
 **Note:** in case of shared Edge & compute cluster hosts, the Overlay Vlan on the Edge N-VDS should be different!]]></description>
           <label>Overlay Vlan id</label>
         </option>
-        <option enforcedvalues='true' name='shared-compute' value='no' values='no,yes' valuesListDelimiter=','>
+        <option enforcedvalues='true' name='SharedCompute' value='no' values='no,yes' valuesListDelimiter=','>
           <description>In case the Edges are deployed in a shared compute cluster you need to use a different vlan id and subnet for Edge overlay traffic </description>
           <label>Are you deploying the Edge VMs in a shared compute cluster?</label>
         </option>
-        <option name='edge-overlay-vlan' regex='^[0-9]{1,4}$' value='0'>
+        <option name='EdgeOverlayVlan' regex='^[0-9]{1,4}$' value='0'>
           <description>In case of shared compute cluster with the Edges please enter overlay Vlan id for Edge VMs [0 - 4096]</description>
           <label>Edge overlay Vlan id in case of shared compute cluser</label>
         </option>
-        <option name='edge-overlay-subnet' regex='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(3[0-2]|[1-2][0-9]|[0-9]))$'>
+        <option name='EdgeOverlaySubnet' regex='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(3[0-2]|[1-2][0-9]|[0-9]))$'>
           <description><![CDATA[Please enter (in CIDR format) the IP gateway for the Edge TEP pool subnet in case of shared compute cluster with the Edges
 e.g. 172.31.12.1/25 or 192.168.10.254/24]]></description>
           <label>Edge TEP pool gateway in case of shared compute cluser</label>
@@ -61,7 +61,7 @@ e.g. 172.31.12.1/25 or 192.168.10.254/24]]></description>
           <description>Optional, only needed if you would like to prep a single ESXI host instead of the whole vSphere cluster  </description>
           <label>Single ESXI password (Optional)</label>
         </option>
-        <option name='edge_vm_root_password'>
+        <option name='edge_vm_root_password' secure='true' valueExposed='true'>
           <description><![CDATA[Choose the Edge VM users (root, audit and admin) password otherwise it will use the same as NSX-T Manager password<br>
 **Important note:** don't forget to configure the host/cluster hosting the edges with Trunk PG on their VDS, to be able to transport overlay and North-South peering Vlans.]]></description>
           <label>Edge VM root password (Optional)</label>
@@ -106,7 +106,7 @@ e.g. 172.31.12.1/25 or 192.168.10.254/24]]></description>
             <entry key='ansible-base-dir-path' value='/var/rundeck/projects/NSX-deploy/scm' />
             <entry key='ansible-become' value='false' />
             <entry key='ansible-disable-limit' value='false' />
-            <entry key='ansible-extra-vars' value='nsxt_ip: ${option.NSXT-IP}&#10;nsx_username: ${option.nsx-username}&#10;nsx_password: ${option.nsx-password}&#10;vcenter_user: ${option.vCenter-username}&#10;vcenter_pass: ${option.vCenter-password}&#10;nsx_filepath: ${file.nsx_file}&#10;nsx_filename: ${file.nsx_file.fileName}&#10;vcenters_list: ${option.Compute-managers}&#10;tep_pool_gw: ${option.TEP_Pool_Gateways}&#10;overlay_vlan: ${option.Overlay-vlan}&#10;esxi_username: ${option.ESXI-username}&#10;esxi_password: ${option.ESXI-password}&#10;edge_mgmt_vlan: ${option.edge-mgmt-vlan}&#10;edge_vm_root_password: ${option.edge_vm_root_password}&#10;edge_overlay_vlan: ${option.edge-overlay-vlan}&#10;edge_overlay_subnet: ${option.edge-overlay-subnet}' />
+            <entry key='ansible-extra-vars' value='nsxt_ip: ${option.NSXT-IP}&#10;nsx_username: ${option.nsx-username}&#10;nsx_password: ${option.nsx-password}&#10;vcenter_user: ${option.vCenter-username}&#10;vcenter_pass: ${option.vCenter-password}&#10;nsx_filepath: ${file.nsx_file}&#10;nsx_filename: ${file.nsx_file.fileName}&#10;vcenters_list: ${option.Compute-managers}&#10;tep_pool_gw: ${option.TEP_Pool_Gateways}&#10;overlay_vlan: ${option.Overlay-vlan}&#10;esxi_username: ${option.ESXI-username}&#10;esxi_password: ${option.ESXI-password}&#10;edge_mgmt_vlan: ${option.edge-mgmt-vlan}&#10;edge_vm_root_password: ${option.edge_vm_root_password}&#10;shared_compute: ${option.SharedCompute}&#10;edge_overlay_vlan: ${option.EdgeOverlayVlan}&#10;edge_overlay_subnet: ${option.EdgeOverlaySubnet}' />
             <entry key='ansible-playbook' value='/var/rundeck/projects/NSX-deploy/scm/01_NSX_install.yml' />
             <entry key='ansible-ssh-passphrase-option' value='option.password' />
             <entry key='ansible-ssh-use-agent' value='false' />
