@@ -13,7 +13,6 @@
       - {"name": "edge-multi-TEP-2nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: "PNIC"},{uplink_name: "EDG-UPLINK2", uplink_type: "PNIC"}]}, 'ntm': [{"name": "LEFT-TOR-Router", "policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: "PNIC"}]}, {"name": "RIGHT-TOR-Router", "policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK2", uplink_type: "PNIC"}]} ] }
       - {"name": "edge-single-TEP-2nics", 'tm': {"policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: "PNIC"}],"standby_list": [{uplink_name: "EDG-UPLINK2", uplink_type: "PNIC"}]}, 'ntm': [{"name": "LEFT-TOR-Router", "policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: "PNIC"}]} ] }
       - {"name": "edge-multi-TEP-4nics", 'tm': {"policy": "LOADBALANCE_SRCID", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: "PNIC"},{uplink_name: "EDG-UPLINK2", uplink_type: "PNIC"}]}, 'ntm': [{"name": "LEFT-TOR-Router", "policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK1", uplink_type: "PNIC"}]}, {"name": "RIGHT-TOR-Router", "policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK2", uplink_type: "PNIC"}]}, {"name": "For-L2-Bridged-Vlans", "policy": "FAILOVER_ORDER", "active_list": [{uplink_name: "EDG-UPLINK3", uplink_type: "PNIC"}]} ] }
- 
 
   tasks:
 
@@ -237,7 +236,7 @@
       teaming: "{{item.tm}}"
       transport_vlan: "{{overlay_vlan|default(0)}}"
       named_teamings: "{{item.ntm|default(omit)}}"
-    loop: "{{uplink_prof_list}}"  
+    loop: "{{uplink_prof_list}}"
 
 
 
