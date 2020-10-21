@@ -517,7 +517,7 @@
       teaming: "{{item.tm}}"
       transport_vlan: "{{edge_overlay_vlan|default(overlay_vlan)}}"
     loop: "{{uplink_prof_list}}"
-    when: (shared_compute == 'true') and (edge_overlay_vlan != 0) and (edge_overlay_subnet|ipaddr) and ('edge' in item.name) 
+    when: (shared_compute|lower == 'true') and (edge_overlay_vlan != 0) and (edge_overlay_subnet|ipaddr) and ('edge' in item.name) 
 
   - name: Create Edge overlay TEP IP Pool in case of shared compute cluster (policy)
     nsxt_policy_ip_pool:
