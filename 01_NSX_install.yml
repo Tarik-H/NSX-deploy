@@ -555,6 +555,7 @@
 ###################################### Deploying Edge VM    
 ######################################
 
+
   - name: Create edge VMs
     nsxt_transport_nodes:
       hostname: "{{nsxt_ip}}"
