@@ -491,6 +491,7 @@
       state: "present"
       teaming: "{{item.tm}}"
       transport_vlan: "{{edge_overlay_vlan|default(overlay_vlan)}}"
+      named_teamings: "{{item.ntm|default(omit)}}"
     loop: "{{uplink_prof_list}}"
     when: (shared_compute|lower == 'true') and (edge_overlay_vlan != 0) and (edge_overlay_subnet|ipaddr) and ('edge' in item.name) 
 
