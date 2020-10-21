@@ -567,6 +567,11 @@
         - "RIGHT-TOR-Router"
     when: system_fabric.edge_transp_nodes is defined
 
+  - debug:
+      - msg: "{{shared_compute|lower}}"
+      - msg: "{{edge_overlay_vlan}}"
+      - msg: "{{edge_overlay_subnet}}"
+
 ###################################### Deploying Edge VM    
 ######################################
 
