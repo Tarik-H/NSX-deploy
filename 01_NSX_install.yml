@@ -568,7 +568,7 @@
               resource_type: "StaticIpPoolSpec"
               # ip_pool_name: "NSX_TEP_POOL"
               ip_pool_name: "{% if (shared_compute|lower == 'true') and (edge_overlay_vlan != 0) and (edge_overlay_subnet|ipaddr)%}EDGE_TEP_POOL_SHARED_COMPUTE{%else%}NSX_TEP_POOL{%endif%}"
-              pnics: "{{item.nics}}"
+            pnics: "{{item.nics}}"
             transport_zone_endpoints:
               - transport_zone_name: "TZ_Overlay"
               - transport_zone_name: "TZ_Vlan"
@@ -662,16 +662,16 @@
 
 
 
-######################################
-##                             combination with when
-## when: not (security is defined or kernel is defined or specified_packages is defined) and ansible_os_family == "RedHat"
-##                                 becomes
+# #####################################
+# #                             combination with when
+# # when: not (security is defined or kernel is defined or specified_packages is defined) and ansible_os_family == "RedHat"
+# #                                 becomes
 #  when:
 #     - '"RedHat" == "RedHat"'
 #     - security|d('') != '' or kernel|d('') != '' or specified_packages|d('') != ''
-
+#
 #   debug:
 #     msg: "{{item.0}}"
 #     msg: "{{item.1}}"
 #   loop: "{{uplinkprofs| subelements('active-uplinks', 'skip_missing=True')}}"
-######################################
+# #####################################
