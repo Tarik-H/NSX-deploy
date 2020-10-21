@@ -569,7 +569,9 @@
 
   - debug:
       msg: "{{shared_compute|lower}}"
+  - debug:
       msg: "{{edge_overlay_vlan}}"
+  - debug:
       msg: "{{edge_overlay_subnet}}"
 
 ###################################### Deploying Edge VM    
