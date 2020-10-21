@@ -465,7 +465,7 @@
       validate_certs: False
       method: get
       path: /api/v1/node/network/name-servers
-      content:
+      # content:
     register: nsxtm_dns
 
   - name: Save NSX-T NTP server IP as variable
