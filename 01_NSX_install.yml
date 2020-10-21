@@ -517,7 +517,7 @@
       teaming: "{{item.tm}}"
       transport_vlan: "{{edge_overlay_vlan|default(overlay_vlan)}}"
     loop: "{{uplink_prof_list}}"
-    when: (shared_compute|lower == 'yes') and (edge_overlay_vlan != 0) and (edge_overlay_subnet is defined) and ('edge' in item.name) 
+    when: (shared_compute|lower == 'yes') and (edge_overlay_vlan|int) and (edge_overlay_subnet is defined) and ('edge' in item.name) 
 
   - name: Create Edge overlay TEP IP Pool in case of shared compute cluster (policy)
     nsxt_policy_ip_pool:
@@ -543,7 +543,7 @@
           "cidr": "{{edge_overlay_subnet|ipaddr('network/prefix')}}"
         }
        ]
-    when: (shared_compute|lower == 'yes') and (edge_overlay_vlan != 0) and (edge_overlay_subnet is defined)      
+    when: (shared_compute|lower == 'yes') and (edge_overlay_vlan|int) and (edge_overlay_subnet is defined)      
     vars: 
       ansible_python_interpreter: /usr/bin/python3
 
@@ -570,7 +570,7 @@
   - debug:
       msg: "{{shared_compute|lower}}"
   - debug:
-      msg: "{{edge_overlay_vlan != 0}}"
+      msg: "{{edge_overlay_vlan|true}}"
   - debug:
       msg: "{{edge_overlay_subnet}}"
 
