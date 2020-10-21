@@ -454,20 +454,7 @@
   #     content:
   #   register: list_tn
 
-###################################### Prep for Edge VM 
-######################################
-
-  - name: Save NSX-T DNS server IP as variable
-    nsxt_rest:
-      hostname: "{{nsxt_ip}}"
-      username: "{{nsx_username}}"
-      password: "{{nsx_password}}"
-      validate_certs: False
-      method: get
-      path: /api/v1/node/network/name-servers
-      # content:
-    register: nsxtm_dns
-
+###################################### Prep for Edge VM
   - name: Save NSX-T NTP server IP as variable
     nsxt_rest:
       hostname: "{{nsxt_ip}}"
@@ -478,6 +465,18 @@
       path: /api/v1/node/services/ntp
       content:
     register: nsxtm_ntp
+
+  - name: Save NSX-T DNS server IP as variable
+    nsxt_rest:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      method: get
+      path: /api/v1/node/network/name-servers
+      content:
+    register: nsxtm_dns
+
 
   - name: Update static Edge TEP Uplink Profile in case of shared compute cluster 
     nsxt_uplink_profiles:
