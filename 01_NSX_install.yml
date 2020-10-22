@@ -73,6 +73,10 @@
     debug:
       msg: "{{nsx_password}}"
 
+  - name: test to see temvar content
+    debug:
+      msg: "{{temp_edge_vm_pass}}"
+
   - name: Provision list of compute managers
     nsxt_fabric_compute_managers:
       hostname: "{{nsxt_ip}}"
