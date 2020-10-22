@@ -534,7 +534,6 @@
   - name: Copy NSX-T pass to edge vm pass in case it is omitted
     set_fact:
       temp_edge_vm_pass: "{{edge_vm_root_password|default(nsx_password)}}"
-    when: (edge_vm_root_password)
 
   - name: test to see var content
     debug:
