@@ -64,6 +64,16 @@
     include_vars:
       file: "./data/system_fabric.yml"
 
+
+  - name: Copy NSX-T pass to edge vm pass in case it is omitted
+    set_fact:
+      temp_edge_vm_pass: "{{edge_vm_root_password|default('slimslom')}}"
+
+  - name: test to see var content
+    debug:
+      msg: "{{nsx_password}}"
+      msg: "temp_edge_vm_pass: {{temp_edge_vm_pass}}"
+
   - name: Provision list of compute managers
     nsxt_fabric_compute_managers:
       hostname: "{{nsxt_ip}}"
