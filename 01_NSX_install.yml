@@ -64,10 +64,9 @@
     include_vars:
       file: "./data/system_fabric.yml"
 
-
   - name: Copy NSX-T pass to edge vm pass in case it is omitted
-    set_facts:
-      temp_edge_vm_pass: "{%if edge_vm_root_password%}{{edge_vm_root_password}}{%else%}{{nsx_password}}{%endif%}"
+    set_fact:
+      temp_edge_vm_pass: "{%if edge_vm_root_password %}{{edge_vm_root_password}}{%else%}{{nsx_password}}{%endif%}"
 
 
   - name: test to see temvar content
