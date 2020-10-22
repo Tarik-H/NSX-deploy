@@ -72,7 +72,6 @@
   - name: test to see var content
     debug:
       msg: "{{nsx_password}}"
-      # msg: "temp_edge_vm_pass: {{temp_edge_vm_pass}}"
 
   - name: Provision list of compute managers
     nsxt_fabric_compute_managers:
