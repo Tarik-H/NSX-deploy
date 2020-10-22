@@ -537,7 +537,7 @@
 
   - name: test to see var content
     debug:
-      msg: "nsxm pass: {{nsx_password}}"
+      msg: "{{nsx_password}}"
       msg: "temp_edge_vm_pass: {{temp_edge_vm_pass}}"
 ###################################### Deploying Edge VM
 ######################################
