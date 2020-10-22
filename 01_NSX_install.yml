@@ -64,15 +64,6 @@
     include_vars:
       file: "./data/system_fabric.yml"
 
-  - name: Copy NSX-T pass to edge vm pass in case it is omitted
-    set_fact:
-      temp_edge_vm_pass: "{%if edge_vm_root_password %}{{edge_vm_root_password}}{%else%}{{nsx_password}}{%endif%}"
-
-
-  - name: test to see temvar content
-    debug:
-      msg: "{{temp_edge_vm_pass}}"
-
   - name: Provision list of compute managers
     nsxt_fabric_compute_managers:
       hostname: "{{nsxt_ip}}"
@@ -540,19 +531,9 @@
         - "RIGHT-TOR-Router"
     when: system_fabric.edge_transp_nodes is defined
 
-  - name: Copy NSX-T pass to edge vm pass in case it is omitted
-    set_fact:
-      temp_edge_vm_pass: "{{edge_vm_root_password|default('slimslom')}}"
 
-  - name: test to see var content
-    debug:
-      msg: "{{nsx_password}}"
-      msg: "temp_edge_vm_pass: {{temp_edge_vm_pass}}"
-  - debug:
-      msg: "{% if (shared_compute|lower == 'true') and (edge_overlay_vlan != 0) and (edge_overlay_subnet)%}EDGE_TEP_POOL_SHARED_COMPUTE{%else%}NSX_TEP_POOL{%endif%}"    
 ###################################### Deploying Edge VM
 ######################################
-
 
   - name: Create edge VMs
     nsxt_transport_nodes:
@@ -594,9 +575,9 @@
         deployment_config:
           form_factor: "{{item.edge_vm_size|upper}}"
           node_user_settings:
-            cli_password: "{{temp_edge_vm_pass}}"
+            cli_password: "{%if edge_vm_root_password %}{{edge_vm_root_password}}{%else%}{{nsx_password}}{%endif%}"
             cli_username: "admin"
-            root_password: "{{temp_edge_vm_pass}}"
+            root_password: "{%if edge_vm_root_password %}{{edge_vm_root_password}}{%else%}{{nsx_password}}{%endif%}"
           vm_deployment_config:
             data_networks: "{{item.edge_vm_networks}}"
             default_gateway_addresses:
