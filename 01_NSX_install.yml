@@ -539,6 +539,8 @@
     debug:
       msg: "{{nsx_password}}"
       msg: "temp_edge_vm_pass: {{temp_edge_vm_pass}}"
+  - debug:
+      msg: "{% if (shared_compute|lower == 'true') and (edge_overlay_vlan != 0) and (edge_overlay_subnet)%}EDGE_TEP_POOL_SHARED_COMPUTE{%else%}NSX_TEP_POOL{%endif%}}"    
 ###################################### Deploying Edge VM
 ######################################
 
