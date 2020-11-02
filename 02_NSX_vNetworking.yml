@@ -128,7 +128,7 @@
       failover_mode: "NON_PREEMPTIVE"
       pool_allocation: "{{item.t1_pool_allocation|default(omit)}}"
       tier0_display_name: "{{ item.linked_t0|default(omit) }}"
-      route_advertisement_types: ["TIER1_CONNECTED", "TIER1_NAT, "TIER1_LB_VIP", "TIER1_LB_SNAT", "TIER1_IPSEC_LOCAL_ENDPOINT"]
+      route_advertisement_types: ["TIER1_CONNECTED", "TIER1_NAT", "TIER1_LB_VIP", "TIER1_LB_SNAT", "TIER1_IPSEC_LOCAL_ENDPOINT"]
       tags: "{{ item.tags | default(omit) }}"
       locale_services:
         - state: "present"
