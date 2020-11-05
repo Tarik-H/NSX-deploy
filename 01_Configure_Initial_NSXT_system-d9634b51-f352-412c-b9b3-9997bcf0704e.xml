@@ -30,7 +30,7 @@
           <description>Enter vCenter compute manager password (Note: The tool assumes the same password for all vCenters)</description>
           <label>vCenter password</label>
         </option>
-        <option delimiter=',' multivalued='true' name='TEP_Pool_Gateways' regex='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(3[0-2]|[1-2][0-9]|[0-9]))$'>
+        <option delimiter=',' multivalued='true' name='TEP_Pool_Gateways' regex='^(?=\d+\.\d+\.\d+\.\d+(\/\d+)?$)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.?){4}(?:\/(?:[0-9]|1[0-9]|2[0-9]|3[0-2]))?$'>
           <description><![CDATA[Please enter (in CIDR format) the IP gateway for each TEP pool subnet you would like to add
 e.g. 172.31.12.1/25 or 192.168.10.254/24]]></description>
           <label>NSX-T TEP pools gateways</label>
@@ -48,7 +48,7 @@ e.g. 172.31.12.1/25 or 192.168.10.254/24]]></description>
           <description>In case of shared compute cluster with the Edges please enter overlay Vlan id for Edge VMs [0 - 4096]</description>
           <label>Edge overlay Vlan id in case of shared compute cluser</label>
         </option>
-        <option name='EdgeOverlaySubnet' regex='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(3[0-2]|[1-2][0-9]|[0-9]))$'>
+        <option name='EdgeOverlaySubnet' regex='^(?=\d+\.\d+\.\d+\.\d+(\/\d+)?$)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.?){4}(?:\/(?:[0-9]|1[0-9]|2[0-9]|3[0-2]))?$'>
           <description><![CDATA[Please enter (in CIDR format) the IP gateway for the Edge TEP pool subnet in case of shared compute cluster with the Edges
 e.g. 172.31.12.1/25 or 192.168.10.254/24]]></description>
           <label>Edge TEP pool gateway in case of shared compute cluser</label>
