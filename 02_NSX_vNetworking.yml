@@ -63,7 +63,7 @@
       transport_zone_display_name: "{{ item.tz }}"
       replication_mode: "MTEP"
       admin_state: UP
-      vlan_ids: "{{item.seg_vlanids}}"
+      vlan_ids: "{{item.seg_vlanids| default(omit)}}"
       tier0_display_name: "{%if item.gw_name and item.gw_type == 'Tier-0 Gateway' %}{{ item.gw_name }}{%endif%}"
       tier1_display_name: "{%if item.gw_name and item.gw_type == 'Tier-1 Gateway' %}{{ item.gw_name }}{%endif%}"
       subnets: "{{ item.seg_subnet | default(omit) }}"
@@ -74,7 +74,7 @@
         uplink_teaming_policy_name: "{{ item.named_teaming|default(omit) }}"
     loop: "{{l2_segments}}"
 #    when: l2_segments is defined and item.named_teaming is defined
-    when: (l2_segments is defined) and (item.tz is defined) and (item.named_teaming)
+    when: (l2_segments is defined) and (item.tz is defined)
     vars:
       ansible_python_interpreter: /usr/bin/python3
 
@@ -104,14 +104,14 @@
           BGP:
             state: present
             enabled: true
-            local_as_num: "{{ nsx_as }}"   ##################
+            local_as_num: "{{ bgp_local_as }}"
             graceful_restart_config:
               mode: HELPER_ONLY
             neighbors: "{{item.bgp_neighbors}}"        
           interfaces: "{{item.interfaces}}"  
     with_items:
       - "{{ gateways }}"
-    when: item.interfaces|bool and item.gateway_type == 'Tier-0 Gateway'
+    when: item.interfaces|bool and item.gateway_type == 'Tier-0 Gateway' and bgp_local_as|bool
     vars:
       ansible_python_interpreter: /usr/bin/python3
 
