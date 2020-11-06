@@ -50,111 +50,110 @@
 
 
 
-###################### Deploy Segments
+##################### Deploy Segments
 
-  - debug:
-      msg: "{{item.gw_name|default(False)}}"
-    # msg: "{% if item.gw_name and (item.gw_type == 'Tier-0 Gateway') %}{{ item.gw_name }}{%endif%}"
-    # msg: "{% if item.gw_name and (item.gw_type == 'Tier-1 Gateway') %}{{ item.gw_name }}{%endif%}"  
+  # - debug:
+  #     msg: "{{item.gw_name|default(False)}}"
+  #   # msg: "{% if item.gw_name and (item.gw_type == 'Tier-0 Gateway') %}{{ item.gw_name }}{%endif%}"
+  #   # msg: "{% if item.gw_name and (item.gw_type == 'Tier-1 Gateway') %}{{ item.gw_name }}{%endif%}"  
+  #   loop: "{{l2_segments}}"
+  #   when: (l2_segments is defined) and (item.tz is defined)
+
+  - name: Create Segments
+    nsxt_policy_segment:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      display_name: "{{ item.segment_name }}"
+      state: present
+      transport_zone_display_name: "{{ item.tz }}"
+      replication_mode: "MTEP"
+      admin_state: UP
+      vlan_ids: "{{item.seg_vlanids| default(omit)}}"
+      tier0_display_name: "{% if item.gw_name is defined and (item.gw_type == 'Tier-0 Gateway') %}{{ item.gw_name }}{%endif%}"
+      tier1_display_name: "{% if item.gw_name is defined and (item.gw_type == 'Tier-1 Gateway') %}{{ item.gw_name }}{%endif%}"
+      subnets: "{{ item.seg_subnet | default(omit) }}"
+      advanced_config:
+        connectivity: "ON"
+        hybrid: False
+        local_egress: False
+        uplink_teaming_policy_name: "{{ item.named_teaming|default(omit) }}"
     loop: "{{l2_segments}}"
     when: (l2_segments is defined) and (item.tz is defined)
+    vars:
+      ansible_python_interpreter: /usr/bin/python3
 
-#   - name: Create Segments
-#     nsxt_policy_segment:
-#       hostname: "{{nsxt_ip}}"
-#       username: "{{nsx_username}}"
-#       password: "{{nsx_password}}"
-#       validate_certs: False
-#       display_name: "{{ item.segment_name }}"
-#       state: present
-#       transport_zone_display_name: "{{ item.tz }}"
-#       replication_mode: "MTEP"
-#       admin_state: UP
-#       vlan_ids: "{{item.seg_vlanids| default(omit)}}"
-#       tier0_display_name: "{% if item.gw_name and (item.gw_type == 'Tier-0 Gateway') %}{{ item.gw_name }}{%endif%}"
-#       tier1_display_name: "{% if item.gw_name and (item.gw_type == 'Tier-1 Gateway') %}{{ item.gw_name }}{%endif%}"
-#       subnets: "{{ item.seg_subnet | default(omit) }}"
-#       advanced_config:
-#         connectivity: "ON"
-#         hybrid: False
-#         local_egress: False
-#         uplink_teaming_policy_name: "{{ item.named_teaming|default(omit) }}"
-#     loop: "{{l2_segments}}"
-# #    when: l2_segments is defined and item.named_teaming is defined
-#     when: (l2_segments is defined) and (item.tz is defined)
-#     vars:
-#       ansible_python_interpreter: /usr/bin/python3
+###################### Deploy TO Gateways
+  - name: Create NSX-T Tier-0 Gateways
+    nsxt_policy_tier0:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      state: present
+      display_name: "{{ item.gateway_name }}"
+      ha_mode: "{{ item.gw_ha_mode }}"
+      failover_mode: "NON_PREEMPTIVE"
+      tags: "{{ item.tags | default(omit) }}"
+      locale_services:
+        - state: "present"
+          id: "{{item.gateway_name}}"
+          display_name: "{{item.gateway_name}}"
+          edge_cluster_info:
+            edge_cluster_display_name: "{{ item.gw_edge_cluster }}"
+          route_redistribution_config:
+            bgp_enabled: true
+            redistribution_rules:
+              - name: connected
+                route_redistribution_types: ["TIER0_SEGMENT", "TIER0_SERVICE_INTERFACE", "TIER1_CONNECTED", "TIER0_NAT"]
+          BGP:
+            state: present
+            enabled: true
+            local_as_num: "{{ bgp_local_as }}"
+            graceful_restart_config:
+              mode: HELPER_ONLY
+            neighbors: "{{item.bgp_neighbors}}"        
+          interfaces: "{{item.interfaces}}"  
+    with_items:
+      - "{{ gateways }}"
+    when: item.interfaces|bool and item.gateway_type == 'Tier-0 Gateway' and bgp_local_as|bool
+    vars:
+      ansible_python_interpreter: /usr/bin/python3
 
-# ###################### Deploy TO Gateways
-#   - name: Create NSX-T Tier-0 Gateways
-#     nsxt_policy_tier0:
-#       hostname: "{{nsxt_ip}}"
-#       username: "{{nsx_username}}"
-#       password: "{{nsx_password}}"
-#       validate_certs: False
-#       state: present
-#       display_name: "{{ item.gateway_name }}"
-#       ha_mode: "{{ item.gw_ha_mode }}"
-#       failover_mode: "NON_PREEMPTIVE"
-#       tags: "{{ item.tags | default(omit) }}"
-#       locale_services:
-#         - state: "present"
-#           id: "{{item.gateway_name}}"
-#           display_name: "{{item.gateway_name}}"
-#           edge_cluster_info:
-#             edge_cluster_display_name: "{{ item.gw_edge_cluster }}"
-#           route_redistribution_config:
-#             bgp_enabled: true
-#             redistribution_rules:
-#               - name: connected
-#                 route_redistribution_types: ["TIER0_SEGMENT", "TIER0_SERVICE_INTERFACE", "TIER1_CONNECTED", "TIER0_NAT"]
-#           BGP:
-#             state: present
-#             enabled: true
-#             local_as_num: "{{ bgp_local_as }}"
-#             graceful_restart_config:
-#               mode: HELPER_ONLY
-#             neighbors: "{{item.bgp_neighbors}}"        
-#           interfaces: "{{item.interfaces}}"  
-#     with_items:
-#       - "{{ gateways }}"
-#     when: item.interfaces|bool and item.gateway_type == 'Tier-0 Gateway' and bgp_local_as|bool
-#     vars:
-#       ansible_python_interpreter: /usr/bin/python3
+###################### Deploy T1 Gateways
+  - name: Create NSX-T Tier-1 Gateways
+    nsxt_policy_tier1:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      state: present
+      display_name: "{{ item.gateway_name }}"
+      ha_mode: "{{ item.gw_ha_mode }}"
+      failover_mode: "NON_PREEMPTIVE"
+      pool_allocation: "{{item.t1_pool_allocation|default(omit)}}"
+      tier0_display_name: "{{ item.linked_t0|default(omit) }}"
+      route_advertisement_types: ["TIER1_CONNECTED", "TIER1_NAT", "TIER1_LB_VIP", "TIER1_LB_SNAT", "TIER1_IPSEC_LOCAL_ENDPOINT"]
+      tags: "{{ item.tags | default(omit) }}"
+      locale_services:
+        - state: "present"
+          id: "{{item.gateway_name}}"
+          edge_cluster_info:
+            edge_cluster_display_name: "{{ item.gw_edge_cluster }}"
+          # ha_vip_configs:
+          #   - vip_subnets:
+          #       - ip_addresses: []
+          #         prefix_len:
+          # interfaces:
+          #   - id:
+          #     segment_display_name:
+          #     subnets:
+          #         - ip_addresses: []
+          #         prefix_len:
 
-# ###################### Deploy T1 Gateways
-#   - name: Create NSX-T Tier-1 Gateways
-#     nsxt_policy_tier1:
-#       hostname: "{{nsxt_ip}}"
-#       username: "{{nsx_username}}"
-#       password: "{{nsx_password}}"
-#       validate_certs: False
-#       state: present
-#       display_name: "{{ item.gateway_name }}"
-#       ha_mode: "{{ item.gw_ha_mode }}"
-#       failover_mode: "NON_PREEMPTIVE"
-#       pool_allocation: "{{item.t1_pool_allocation|default(omit)}}"
-#       tier0_display_name: "{{ item.linked_t0|default(omit) }}"
-#       route_advertisement_types: ["TIER1_CONNECTED", "TIER1_NAT", "TIER1_LB_VIP", "TIER1_LB_SNAT", "TIER1_IPSEC_LOCAL_ENDPOINT"]
-#       tags: "{{ item.tags | default(omit) }}"
-#       locale_services:
-#         - state: "present"
-#           id: "{{item.gateway_name}}"
-#           edge_cluster_info:
-#             edge_cluster_display_name: "{{ item.gw_edge_cluster }}"
-#           # ha_vip_configs:
-#           #   - vip_subnets:
-#           #       - ip_addresses: []
-#           #         prefix_len:
-#           # interfaces:
-#           #   - id:
-#           #     segment_display_name:
-#           #     subnets:
-#           #         - ip_addresses: []
-#           #         prefix_len:
-
-#     with_items:
-#       - "{{ gateways }}"
-#     when: item.interfaces|bool and item.gateway_type == 'Tier-1 Gateway'
-#     vars:
-#       ansible_python_interpreter: /usr/bin/python3
+    with_items:
+      - "{{ gateways }}"
+    when: item.interfaces|bool and item.gateway_type == 'Tier-1 Gateway'
+    vars:
+      ansible_python_interpreter: /usr/bin/python3
