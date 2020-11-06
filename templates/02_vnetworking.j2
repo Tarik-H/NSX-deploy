@@ -13,14 +13,14 @@ gateways:
     gateway_type: "{{gw.Gateway_type}}"
     gw_edge_cluster: "{{gw.Hosting_Edge_cluster}}"
     gw_ha_mode: "{{gw.HA_mode|default('ACTIVE_STANDBY')}}"
-    {%if gw.Gateway_type == 'Tier-1 Gateway' and gw.Linked_Tier0_Gateway%}
+{%  if gw.Gateway_type == 'Tier-1 Gateway' and gw.Linked_Tier0_Gateway%}
     linked_t0: "{{gw.Linked_Tier0_Gateway}}"
-    {%endif %}
-    {%if gw.Gateway_type == 'Tier-1 Gateway' and gw.Tier1_LB_size%}
+{%  endif %}
+{%  if gw.Gateway_type == 'Tier-1 Gateway' and gw.Tier1_LB_size%}
     t1_pool_allocation: "{{gw.Tier1_LB_size}}"
-    {%endif %}
+{%  endif %}
     bgp_neighbors:
-    {%- for i in vgateways if i.Gateway_name == gw.Gateway_name and i.External_interface_ip|ipaddr %}
+{%  for i in vgateways if i.Gateway_name == gw.Gateway_name and i.External_interface_ip|ipaddr %}
       - neighbor_address: "{{i.BGP_neighbor_ip}}"
         remote_as_num: "{{ i.BGP_neighbor_AS }}"
         bfd:
@@ -28,9 +28,9 @@ gateways:
         state: present
         source_addresses: ["{{i.External_interface_ip}}"]
         password: "{{i.BGP_password|default(omit)}}"
-    {% endfor %}
+{%  endfor %}
     interfaces:
-    {% for i in vgateways if i.Gateway_name == gw.Gateway_name and i.External_interface_in_edge and i.External_interface_ip|ipaddr %}
+{%  for i in vgateways if i.Gateway_name == gw.Gateway_name and i.External_interface_in_edge and i.External_interface_ip|ipaddr %}
       - id: "{{i.External_interface_name}}"
         state: "present"
         type: "EXTERNAL"
@@ -42,5 +42,5 @@ gateways:
         subnets:
           - ip_addresses: ["{{ i.External_interface_ip|ipaddr('address') }}"]
             prefix_len: "{{ i.External_interface_ip|ipaddr('prefix') }}"
-    {% endfor %}
+{%  endfor %}
 {% endfor %}
