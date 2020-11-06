@@ -53,8 +53,9 @@
 ###################### Deploy Segments
 
   - debug:
-      msg: "{% if item.gw_name and (item.gw_type == 'Tier-0 Gateway') %}{{ item.gw_name }}{%endif%}"
-      msg: "{% if item.gw_name and (item.gw_type == 'Tier-1 Gateway') %}{{ item.gw_name }}{%endif%}"  
+      msg: "{{item.gw_name|default(False)}}"
+    # msg: "{% if item.gw_name and (item.gw_type == 'Tier-0 Gateway') %}{{ item.gw_name }}{%endif%}"
+    # msg: "{% if item.gw_name and (item.gw_type == 'Tier-1 Gateway') %}{{ item.gw_name }}{%endif%}"  
     loop: "{{l2_segments}}"
     when: (l2_segments is defined) and (item.tz is defined)
 
