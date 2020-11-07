@@ -85,7 +85,7 @@
           interfaces: "{{item.interfaces}}"  
     with_items:
       - "{{ gateways }}"
-    when: item.interfaces|default(False) and item.gateway_type == 'Tier-0 Gateway' and bgp_local_as|default(False)
+    when: item.interfaces|default(False) and item.gateway_type == 'Tier-0 Gateway' and bgp_local_as|int|default(False)
     vars:
       ansible_python_interpreter: /usr/bin/python3
 
