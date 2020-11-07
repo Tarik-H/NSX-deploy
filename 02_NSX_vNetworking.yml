@@ -73,7 +73,7 @@
       vlan_ids: "{{item.seg_vlanids| default(omit)}}"
       tier0_display_name: "{% if item.gw_name is defined and (item.gw_type == 'Tier-0 Gateway') %}{{ item.gw_name }}{%else%}{{ item.gw_name|default(omit) }}{%endif%}"
       tier1_display_name: "{% if item.gw_name is defined and (item.gw_type == 'Tier-1 Gateway') %}{{ item.gw_name }}{%else%}{{ item.gw_name|default(omit) }}{%endif%}"
-      subnets: "{{ item.seg_subnet | default(omit)|to_json }}"
+      subnets: "{{ item.seg_subnet|to_json|default(omit) }}"
       advanced_config:
         connectivity: "ON"
         hybrid: False
