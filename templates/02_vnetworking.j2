@@ -36,8 +36,8 @@ gateways:
         type: "EXTERNAL"
         urpf_mode: "NONE"
         edge_node_info:
-        edge_cluster_display_name: "{{ i.Hosting_Edge_cluster }}"
-        edge_node_display_name: "{{ i.External_interface_in_edge }}"
+          edge_cluster_display_name: "{{ i.Hosting_Edge_cluster }}"
+          edge_node_display_name: "{{ i.External_interface_in_edge }}"
         segment_display_name: "{{ i.Connected_to_segment }}"
         subnets:
           - ip_addresses: ["{{ i.External_interface_ip|ipaddr('address') }}"]
