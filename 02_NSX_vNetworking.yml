@@ -78,7 +78,7 @@
           BGP:
             state: present
             enabled: true
-            local_as_num: "{{ bgp_local_as }}"
+            local_as_num: "{{ bgp_local_as|int }}"
             graceful_restart_config:
               mode: HELPER_ONLY
             neighbors: "{{item.bgp_neighbors}}"        
