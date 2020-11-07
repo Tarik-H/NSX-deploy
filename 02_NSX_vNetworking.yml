@@ -102,7 +102,8 @@
       pool_allocation: "{{item.t1_pool_allocation|default(omit)}}"
       tier0_display_name: "{{ item.linked_t0|default(omit) }}"
       route_advertisement_types: ["TIER1_CONNECTED", "TIER1_NAT", "TIER1_LB_VIP", "TIER1_LB_SNAT", "TIER1_IPSEC_LOCAL_ENDPOINT"]
-      tags: "{{ item.tags | default(omit) }}"
+      # tags: "{{ item.tags | default(omit) }}"
+      id: "{{ item.gateway_name }}"
       locale_services:
         - state: "present"
           id: "{{item.gateway_name}}"
