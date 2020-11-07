@@ -98,7 +98,6 @@
       validate_certs: False
       state: present
       display_name: "{{ item.gateway_name }}"
-      ha_mode: "{{ item.gw_ha_mode }}"
       failover_mode: "NON_PREEMPTIVE"
       pool_allocation: "{{item.t1_pool_allocation|default(omit)}}"
       tier0_display_name: "{{ item.linked_t0|default(omit) }}"
