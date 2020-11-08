@@ -21,11 +21,12 @@ gateways:
 {%  endif %}
     bgp_neighbors:
 {%  for i in vgateways if i.Gateway_name == gw.Gateway_name and i.External_interface_ip|ipaddr %}
-      - address: "{{i.BGP_neighbor_ip}}"
+      - state: present
+        display_name: "{{i.BGP_neighbor_ip}}"
+        neighbor_address: "{{i.BGP_neighbor_ip|ipaddr}}"
         remote_as_num: "{{ i.BGP_neighbor_AS }}"
         bfd:
           enabled: "{% if i.BGP_BFD|lower == 'yes'%}True{%else%}False{%endif%}"
-        state: present
         source_addresses: ["{{i.External_interface_ip}}"]
         password: "{{i.BGP_password|default(omit)}}"
 {%  endfor %}
