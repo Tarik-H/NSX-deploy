@@ -21,7 +21,7 @@ gateways:
 {%  endif %}
     bgp_neighbors:
 {%  for i in vgateways if i.Gateway_name == gw.Gateway_name and i.External_interface_ip|ipaddr %}
-      - neighbor_address: "{{i.BGP_neighbor_ip}}"
+      - address: "{{i.BGP_neighbor_ip}}"
         remote_as_num: "{{ i.BGP_neighbor_AS }}"
         bfd:
           enabled: "{% if i.BGP_BFD|lower == 'yes'%}True{%else%}False{%endif%}"
