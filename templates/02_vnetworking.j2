@@ -27,7 +27,7 @@ gateways:
         remote_as_num: "{{ i.BGP_neighbor_AS }}"
         bfd:
           enabled: "{% if i.BGP_BFD|lower == 'yes'%}True{%else%}False{%endif%}"
-        source_addresses: ["{{i.External_interface_ip}}"]
+        source_addresses: ["{{i.External_interface_ip|ipaddr('address')}}"]
         password: "{{i.BGP_password|default(omit)}}"
 {%  endfor %}
     interfaces:
