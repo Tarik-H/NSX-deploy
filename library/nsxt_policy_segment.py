@@ -412,7 +412,8 @@ options:
         suboptions:
             address_bindings:
                 description: Static address binding used for the port.
-                type: dict
+                type: list
+                elements: dict
                 suboptions:
                 ip_address:
                     description: IP Address for port binding.
@@ -886,8 +887,6 @@ class NSXTSegment(NSXTBaseRealizableResource):
             if nsx_resource_params['advanced_config'].get('address_pool_id'):
                 address_pool_id = nsx_resource_params['advanced_config'].pop(
                     'address_pool_id')
-                nsx_resource_params['advanced_config'].pop(
-                    'address_pool_display_name')
             elif nsx_resource_params['advanced_config'].get(
                     'address_pool_display_name'):
                 address_pool_id = self.get_id_from_display_name(
@@ -896,8 +895,6 @@ class NSXTSegment(NSXTBaseRealizableResource):
                     ignore_not_found_error=False)
                 nsx_resource_params['advanced_config'].pop(
                     'address_pool_display_name')
-                nsx_resource_params['advanced_config'].pop(
-                    'address_pool_id')
             if address_pool_id:
                 address_pool_paths = [IP_POOL_URL + "/" + address_pool_id]
                 nsx_resource_params['advanced_config'][
@@ -920,7 +917,8 @@ class NSXTSegment(NSXTBaseRealizableResource):
             segment_port_arg_spec.update(
                 address_bindings=dict(
                     required=False,
-                    type='dict',
+                    type='list',
+                    elements='dict',
                     options=dict(
                         ip_address=dict(
                             required=False,

@@ -1110,6 +1110,25 @@ class NSXTTier1(NSXTBaseRealizableResource):
         def get_spec_identifier(cls):
             return "locale_services"
 
+        def infer_resource_id(self, parent_info):
+            all_locale_services = self.get_all_resources_from_nsx()
+            if len(all_locale_services) == 0:
+                self.module.fail_json(
+                    msg="No {} found under Tier1 gateway {}. Please specify "
+                        "the id or display_name of the LocaleService to be "
+                        "created".format(
+                            self.get_spec_identifier(),
+                            parent_info.get("tier1_id", 'default')))
+            if len(all_locale_services) > 1:
+                ls_ids = [ls['id'] for ls in all_locale_services]
+                self.module.fail_json(
+                    msg="Multiple {} found under Tier1 gateway {} with IDs "
+                        "{}. Please specify the id of the LocaleService "
+                        "to be updated".format(
+                            self.get_spec_identifier(),
+                            parent_info.get("tier1_id", 'default'), ls_ids))
+            return all_locale_services[0]['id']
+
         @staticmethod
         def get_resource_spec():
             tier1_ls_arg_spec = {}
@@ -1308,19 +1327,17 @@ class NSXTTier1(NSXTBaseRealizableResource):
                         if not external_interface_path:
                             tier0_id = self.get_id_using_attr_name_else_fail(
                                 'tier0', external_interface, TIER_0_URL,
-                                "Tier 0", ignore_not_found_error=False)
+                                "Tier 0")
                             tier0_ls_id = (
                                 self.get_id_using_attr_name_else_fail(
                                     'tier0_ls', external_interface,
                                     TIER_0_LOCALE_SERVICE_URL,
-                                    "Tier 0 Locale Service",
-                                    ignore_not_found_error=False))
+                                    "Tier 0 Locale Service"))
                             tier0_ls_inf_id = (
                                 self.get_id_using_attr_name_else_fail(
                                     'tier0_ls_interface', external_interface,
                                     TIER_0_LS_INTERFACE_URL,
-                                    "Tier 0 Interface",
-                                    ignore_not_found_error=False))
+                                    "Tier 0 Interface"))
                             external_interface_path = (
                                 TIER_0_LS_INTERFACE_URL.format(
                                     tier0_id, tier0_ls_id) + "/" +

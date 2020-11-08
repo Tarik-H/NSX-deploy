@@ -464,26 +464,26 @@ options:
                 choices:
                     - present
                     - absent
-            bfd_config_id:
+            bfd_profile_id:
                 description:
-                    - The associated BFD Config ID
-                    - Either this, bfd_config_display_name, or bfd_config_path
-                      must be specified
-                    - BFD configuration is not supported for IPv6 networks.
+                    - The associated BFD Profile ID
+                    - Either this, bfd_profile_display_name, or
+                      bfd_profile_path must be specified
+                    - BFD Profile is not supported for IPv6 networks.
                 type: str
-            bfd_config_display_name:
+            bfd_profile_display_name:
                 description:
-                    - The associated BFD Config display name
-                    - Either this, bfd_config_id, or bfd_config_path
+                    - The associated BFD Profile display name
+                    - Either this, bfd_profile_id, or bfd_profile_path
                       must be specified
-                    - BFD configuration is not supported for IPv6 networks.
+                    - BFD Profile is not supported for IPv6 networks.
                 type: str
-            bfd_config_path:
+            bfd_profile_path:
                 description:
-                    - The associated BFD Config policy path
-                    - Either this, bfd_config_display_name, or bfd_config_id
+                    - The associated BFD Profile policy path
+                    - Either this, bfd_profile_display_name, or bfd_profile_id
                       must be specified
-                    - BFD configuration is not supported for IPv6 networks.
+                    - BFD Profile is not supported for IPv6 networks.
                 type: str
             enabled:
                 description: Flag to enable BFD peer.
@@ -1028,7 +1028,8 @@ options:
                             route_filtering:
                                 description: Enable address families and route
                                              filtering in each direction
-                                type: dict
+                                type: list
+                                elements: dict
                                 required: False
                                 suboptions:
                                     address_family:
@@ -1272,7 +1273,7 @@ EXAMPLES = '''
       - state: present
         display_name: test-peer-1
         peer_address: "192.100.100.5"
-        bfd_config_id: test-bfd-config
+        bfd_profile_id: test-bfd-config
     locale_services:
       - state: present
         id: "test-t0ls"
@@ -1635,13 +1636,13 @@ class NSXTTier0(NSXTBaseRealizableResource):
         def get_resource_spec():
             tier0_sr_bfd_peer_arg_spec = {}
             tier0_sr_bfd_peer_arg_spec.update(
-                bfd_config_id=dict(
+                bfd_profile_id=dict(
                     type='str'
                 ),
-                bfd_config_display_name=dict(
+                bfd_profile_display_name=dict(
                     type='str'
                 ),
-                bfd_config_path=dict(
+                bfd_profile_path=dict(
                     type='str'
                 ),
                 enabled=dict(
@@ -1664,15 +1665,18 @@ class NSXTTier0(NSXTBaseRealizableResource):
             return TIER_0_BFD_PEERS.format(tier0_id)
 
         def update_resource_params(self, nsx_resource_params):
-            if 'bfd_config_path' in nsx_resource_params:
+            if 'bfd_profile_path' in nsx_resource_params:
+                nsx_resource_params.pop('bfd_profile_id', None)
+                nsx_resource_params.pop('bfd_profile_display_name', None)
                 return
-            bfd_config_id = self.get_id_using_attr_name_else_fail(
-                "bfd_config", nsx_resource_params, '/infra/bfd-configs',
-                'BFD Config')
-            nsx_resource_params.pop('bfd_config_id', None)
-            nsx_resource_params.pop('bfd_config_display_name', None)
-            nsx_resource_params['bfd_config_path'] = (
-                '/infra/bfd-configs/{}'.format(bfd_config_id))
+            bfd_profile_id = self.get_id_using_attr_name_else_fail(
+                "bfd_profile", nsx_resource_params, '/infra/bfd-profiles',
+                'BFD Profile')
+            nsx_resource_params.pop('bfd_profile_id', None)
+            nsx_resource_params.pop('bfd_profile_display_name', None)
+
+            nsx_resource_params['bfd_profile_path'] = (
+                '/infra/bfd-profiles/{}'.format(bfd_profile_id))
 
     class NSXTTier0LocaleService(NSXTBaseRealizableResource):
         def get_spec_identifier(self):
@@ -1681,6 +1685,25 @@ class NSXTTier0(NSXTBaseRealizableResource):
         @classmethod
         def get_spec_identifier(cls):
             return "locale_services"
+
+        def infer_resource_id(self, parent_info):
+            all_locale_services = self.get_all_resources_from_nsx()
+            if len(all_locale_services) == 0:
+                self.module.fail_json(
+                    msg="No {} found under Tier0 gateway {}. Please specify "
+                        "the id or display_name of the LocaleService to be "
+                        "created".format(
+                            self.get_spec_identifier(),
+                            parent_info.get("tier0_id", 'default')))
+            if len(all_locale_services) > 1:
+                ls_ids = [ls['id'] for ls in all_locale_services]
+                self.module.fail_json(
+                    msg="Multiple {} found under Tier0 gateway {} with IDs "
+                        "{}. Please specify the id of the LocaleService "
+                        "to be updated".format(
+                            self.get_spec_identifier(),
+                            parent_info.get("tier0_id", 'default'), ls_ids))
+            return all_locale_services[0]['id']
 
         @staticmethod
         def get_resource_spec():
@@ -1871,8 +1894,7 @@ class NSXTTier0(NSXTBaseRealizableResource):
                                 None, external_interface,
                                 interface_base_url,
                                 NSXTTier0.NSXTTier0LocaleService.
-                                NSXTTier0Interface.__name__,
-                                ignore_not_found_error=False))
+                                NSXTTier0Interface.__name__))
                     ha_vip_config[
                         'external_interface_paths'] = external_interface_paths
 
@@ -2184,7 +2206,8 @@ class NSXTTier0(NSXTBaseRealizableResource):
                         ),
                         route_filtering=dict(
                             required=False,
-                            type='dict',
+                            type='list',
+                            elements='dict',
                             options=dict(
                                 address_family=dict(
                                     required=False,
