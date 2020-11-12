@@ -1,0 +1,11 @@
+{% set vsegments = spreadsheet_vNetworking_segments %}
+{% set vgateways = spreadsheet_vNetworking_gateways %}
+{% set vtags = spreadsheet_vTags %}
+{% set vsecgroups = spreadsheet_vSec_grps %}
+
+vm_tags:
+{% for i in vtags if (i.vm_name) %}
+  - { vm_name: "{{i.vm_name}}", tags:[ {%if i.Tag_Environment%} {Tag: "ENVIRONMENT", scope: "{{i.Tag_Environment}}"}{%endif%}{%if i.Tag_Management%} ,{tag: "Management", scope: "{{i.Tag_Management}}"}{%endif%}{%if i.Tag_SharedService%}, {Tag: "SHAREDSERVICE", scope: "{{i.Tag_SharedService}}"}{%endif%}{%if i.Tag_ApplicationName%}, {Tag: "applicationname", scope: "{{i.Tag_ApplicationName}}"}{%endif%}{%if i.Tag_ApplicationTier%}, {Tag: "tier", scope: "{{i.Tag_ApplicationTier}}"}{%endif%}{%if i.Tag_Critical%}, {Tag: "Critical"}{%endif%}] }
+{% endfor %}
+
+security_groups:

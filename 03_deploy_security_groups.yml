@@ -1,0 +1,95 @@
+---
+- name: Create NSX-T security Tags and groups
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+
+  tasks:
+
+  - name: Delete data directories
+    file:
+      path: ./{{item}}
+      state: absent
+    with_items:
+      - 'data'
+      - 'data'
+      - 'fragments'
+
+  - name: Create data directories
+    file:
+      path: ./data/fragments
+      state: directory
+
+  - name: Copy & prepare the uploaded input Excel file
+    copy:
+      src: "{{nsx_filepath}}/"
+      dest: "./data/{{nsx_filename}}"
+
+  - name: Initialize the excel file to use the input data
+    xls_to_facts:
+      src: "./data/{{nsx_filename}}"
+    tags:
+      - excel
+
+  - name: Create security endpoints model from spreadsheet data
+    template:
+      src: "./templates/{{item}}_vsec_grps.j2"
+      dest: "./data/fragments/{{item}}_sec_groups.yml"
+    with_items:
+      - "03"
+
+  - name: Assemble fabric model
+    assemble:
+      src: "./data/fragments/"
+      dest: "./data/nsx_model.yml"
+
+  - name: load data
+    include_vars:
+      file: "./data/nsx_model.yml"
+
+
+
+
+
+###################### Crate Tags
+
+  - name: Deploy Tags on VMs
+    nsxt_vm_tags:
+      hostname: "{{nsxt_ip}}"
+      username: "{{nsx_username}}"
+      password: "{{nsx_password}}"
+      validate_certs: False
+      virtual_machine_display_name: "{{item.vm_name}}"
+      remove_other_tags: False
+      add_tags: "{{item.tags}}"
+        # - scope: {{item.}}
+        #   tag: my-tag
+    loop: "{{vm_tags}}"
+    vars:
+      ansible_python_interpreter: /usr/bin/python3
+    when: vm_tags is defined and item.vm_name|default(False) and item.tags|default(False)  
+
+
+###################### Deploy security groups
+
+
+  # - name: create Policy Group
+  #   nsxt_policy_group:
+  #     hostname: "{{nsxt_ip}}"
+  #     username: "{{nsx_username}}"
+  #     password: "{{nsx_password}}"
+  #     validate_certs: False
+  #     id: test-lb-service
+  #     display_name: test-lb-service
+  #     state: "present"
+  #     domain_id: "default"
+  #     expression:
+  #       - member_type: "VirtualMachine"
+  #         value: "webvm"
+  #         key: "Tag"
+  #         operator: "EQUALS"
+  #         resource_type: "Condition"
+  #   loop: "{{}}"
+  #   vars:
+  #     ansible_python_interpreter: /usr/bin/python3
