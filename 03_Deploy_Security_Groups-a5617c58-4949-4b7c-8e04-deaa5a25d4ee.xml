@@ -1,0 +1,64 @@
+<joblist>
+  <job>
+    <context>
+      <options preserveOrder='true'>
+        <option name='NSXT-IP' regex='\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z' required='true'>
+          <description>Please Enter the NSX-TManager IP address</description>
+          <label>NSX-T Manager IP</label>
+        </option>
+        <option name='nsx-username' secure='true' storagePath='keys/nsx-secret-key-store/nsx-username' valueExposed='true'>
+          <description>Enter NSX Manager username</description>
+          <label>NSX-T Manager username</label>
+        </option>
+        <option name='nsx-password' secure='true' storagePath='keys/nsx-secret-key-store/nsx-password' valueExposed='true'>
+          <description>Enter NSX Manager password</description>
+          <label>NSX-T Manager password</label>
+        </option>
+        <option name='nsx_file' type='file'>
+          <description>Enter deployment input data as Excel sheet file </description>
+          <label>NSX-T deployment Excel file</label>
+        </option>
+      </options>
+    </context>
+    <defaultTab>nodes</defaultTab>
+    <description><![CDATA[
+**This workflow configures NSXT VM Tags and security groups ** <br>
+
+
+]]></description>
+    <dispatch>
+      <excludePrecedence>true</excludePrecedence>
+      <keepgoing>true</keepgoing>
+      <rankOrder>ascending</rankOrder>
+      <successOnEmptyNodeFilter>true</successOnEmptyNodeFilter>
+      <threadcount>1</threadcount>
+    </dispatch>
+    <executionEnabled>true</executionEnabled>
+    <id>a5617c58-4949-4b7c-8e04-deaa5a25d4ee</id>
+    <loglevel>INFO</loglevel>
+    <name>03_Deploy_Security_Groups</name>
+    <nodeFilterEditable>false</nodeFilterEditable>
+    <nodefilters>
+      <filter>name: localhost</filter>
+    </nodefilters>
+    <nodesSelectedByDefault>true</nodesSelectedByDefault>
+    <plugins />
+    <scheduleEnabled>true</scheduleEnabled>
+    <sequence keepgoing='false' strategy='node-first'>
+      <command>
+        <step-plugin type='com.batix.rundeck.plugins.AnsiblePlaybookWorkflowStep'>
+          <configuration>
+            <entry key='ansible-base-dir-path' value='/var/rundeck/projects/NSX-deploy/scm' />
+            <entry key='ansible-become' value='false' />
+            <entry key='ansible-disable-limit' value='false' />
+            <entry key='ansible-extra-vars' value='nsxt_ip: ${option.NSXT-IP}&#10;nsx_username: ${option.nsx-username}&#10;nsx_password: ${option.nsx-password}&#10;vcenter_user: ${option.vCenter-username}&#10;vcenter_pass: ${option.vCenter-password}&#10;nsx_filepath: ${file.nsx_file}&#10;nsx_filename: ${file.nsx_file.fileName}&#10;vcenters_list: ${option.Compute-managers}&#10;tep_pool_gw: ${option.TEP_Pool_Gateways}&#10;overlay_vlan: ${option.Overlay-vlan}&#10;esxi_username: ${option.ESXI-username}&#10;esxi_password: ${option.ESXI-password}&#10;edge_mgmt_vlan: ${option.edge-mgmt-vlan}&#10;edge_vm_root_password: ${option.edge_vm_root_password}&#10;shared_compute: ${option.SharedCompute}&#10;edge_overlay_vlan: ${option.EdgeOverlayVlan}&#10;edge_overlay_subnet: ${option.EdgeOverlaySubnet}' />
+            <entry key='ansible-playbook' value='/var/rundeck/projects/NSX-deploy/scm/03_deploy_security_groups.yml' />
+            <entry key='ansible-ssh-passphrase-option' value='option.password' />
+            <entry key='ansible-ssh-use-agent' value='false' />
+          </configuration>
+        </step-plugin>
+      </command>
+    </sequence>
+    <uuid>a5617c58-4949-4b7c-8e04-deaa5a25d4ee</uuid>
+  </job>
+</joblist>
