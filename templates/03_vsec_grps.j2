@@ -5,7 +5,7 @@
 
 vm_tags:
 {% for i in vtags if (i.vm_name) %}
-  - { vm_name: "{{i.vm_name}}", tags: [ {%if i.Tag_Environment%} {tag: "ENVIRONMENT", scope: "{{i.Tag_Environment}}"}{%endif%}{%if i.Tag_Management%} ,{tag: "Management", scope: "{{i.Tag_Management}}"}{%endif%}{%if i.Tag_SharedService%}, {tag: "SHAREDSERVICE", scope: "{{i.Tag_SharedService}}"}{%endif%}{%if i.Tag_ApplicationName%}, {tag: "applicationname", scope: "{{i.Tag_ApplicationName}}"}{%endif%}{%if i.Tag_ApplicationTier%}, {tag: "tier", scope: "{{i.Tag_ApplicationTier}}"}{%endif%}{%if i.Tag_Critical%}, {tag: "Critical"}{%endif%}] }
+  - { vm_name: "{{i.vm_name}}", tags: [ {%if i.Tag_Environment%} {tag: "ENVIRONMENT", scope: "{{i.Tag_Environment}}"}{%endif%}{%if i.Tag_Management%} ,{tag: "Management", scope: "{{i.Tag_Management}}"}{%endif%}{%if i.Tag_SharedService%}, {tag: "SHAREDSERVICE", scope: "{{i.Tag_SharedService}}"}{%endif%}{%if i.Tag_ApplicationName%}, {tag: "applicationname", scope: "{{i.Tag_ApplicationName}}"}{%endif%}{%if i.Tag_ApplicationTier%}, {tag: "tier", scope: "{{i.Tag_ApplicationTier}}"}{%endif%}{%if i.Tag_Critical%}, {tag: "Critical", scope: }{%endif%}] }
 {% endfor %}
 
 security_groups:
