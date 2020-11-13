@@ -61,7 +61,7 @@
       password: "{{nsx_password}}"
       validate_certs: False
       virtual_machine_display_name: "{{item.vm_name}}"
-      remove_other_tags: False
+      remove_other_tags: True
       add_tags: "{{item.tags}}"
         # - scope: {{item.}}
         #   tag: my-tag
