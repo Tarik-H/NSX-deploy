@@ -44,7 +44,10 @@ security_groups:
 {%            if not loop.first and i.conjunction_operator %}
           - conjunction_operator: "{{i.conjunction_operator}}"
             resource_type: ConjunctionOperator
-{%            endif%}            
+{%            endif%}
+{%            if loop.last %}
+        resource_type: NestedExpression
+{%            endif%}
 {%        elif loop.length == 1 %}
       - resource_type: "Condition"
         member_type: {%if 'dynamic_vm' in i.member_type%}"VirtualMachine"{%elif i.member_type= 'dynamic_segment_tag'%}"Segment"{%elif i.member_type= 'dynamic_ipset_tag'%}"IPSet"{%endif%}
