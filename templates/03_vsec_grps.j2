@@ -12,23 +12,23 @@ vm_tags:
 security_groups:
 {% for g in vsecgroups if (g.group_name) and (g.group_name not in temp_grps) %}
 {{temp_grps.append(g.group_name)}}
-{% set temp_dynamic_grp= [] %}
+{% set temp_dynamic_grp = [] %}
   - group_name: "{{g.group_name}}"
     expression:
-{% if g.member_type= 'static_ip_subnet'%}
+{% if g.member_type== 'static_ip_subnet'%}
       - resource_type: "IPAddressExpression"
         ip_addresses: "{{g.value|split(',')}}"
-{% elif g.member_type= 'AD_group' %}
+{% elif g.member_type== 'AD_group' %}
       - resource_type: "IdentityGroupExpression"
         identity_groups: ["{{g.value}}"]
-{% elif g.member_type= 'static_segment' or g.member_type= 'static_existing_group' %}
+{% elif g.member_type== 'static_segment' or g.member_type== 'static_existing_group' %}
       - resource_type: "PathExpression"
         paths: ["{{g.value}}"]
-{% elif g.member_type= 'static_vm' %}
+{% elif g.member_type== 'static_vm' %}
       - resource_type: "ExternalIDExpression"
         member_type: "VirtualMachine"
         external_ids: ["{{g.value}}"]
-{% elif g.member_type= 'static_physical_server' %}
+{% elif g.member_type== 'static_physical_server' %}
       - resource_type: "ExternalIDExpression"
         member_type: "PhysicalServer"
         external_ids: ["{{g.value}}"]
@@ -37,8 +37,8 @@ security_groups:
 {%        if  loop.length > 1 and loop.length < 6  %}
       - expressions:
           - resource_type: "Condition"
-            member_type: {%if 'dynamic_vm' in i.member_type%}"VirtualMachine"{%elif i.member_type= 'dynamic_segment_tag'%}"Segment"{%elif i.member_type= 'dynamic_ipset_tag'%}"IPSet"{%endif%}
-            key: {%if i.member_type= 'dynamic_vm_name'%}"Name"{%elif i.member_type= 'dynamic_vm_os_name'%}"OSName"{%elif i.member_type= 'dynamic_vm_computer_name'%}"ComputerName"{%else%}"Tag"{%endif%}
+            member_type: {%if 'dynamic_vm' in i.member_type%}"VirtualMachine"{%elif i.member_type== 'dynamic_segment_tag'%}"Segment"{%elif i.member_type== 'dynamic_ipset_tag'%}"IPSet"{%endif%}
+            key: {%if i.member_type== 'dynamic_vm_name'%}"Name"{%elif i.member_type== 'dynamic_vm_os_name'%}"OSName"{%elif i.member_type== 'dynamic_vm_computer_name'%}"ComputerName"{%else%}"Tag"{%endif%}
             operator: {%if 'dynamic_vm' in i.member_type%}"{{i.dynamic_operator}}"{%else%}"EQUALS"{%endif%}
             value: "{{i.value}}"
 {%            if not loop.first and i.conjunction_operator %}
@@ -50,8 +50,8 @@ security_groups:
 {%            endif%}
 {%        elif loop.length == 1 %}
       - resource_type: "Condition"
-        member_type: {%if 'dynamic_vm' in i.member_type%}"VirtualMachine"{%elif i.member_type= 'dynamic_segment_tag'%}"Segment"{%elif i.member_type= 'dynamic_ipset_tag'%}"IPSet"{%endif%}
-        key: {%if i.member_type= 'dynamic_vm_name'%}"Name"{%elif i.member_type= 'dynamic_vm_os_name'%}"OSName"{%elif i.member_type= 'dynamic_vm_computer_name'%}"ComputerName"{%else%}"Tag"{%endif%}
+        member_type: {%if 'dynamic_vm' in i.member_type%}"VirtualMachine"{%elif i.member_type== 'dynamic_segment_tag'%}"Segment"{%elif i.member_type== 'dynamic_ipset_tag'%}"IPSet"{%endif%}
+        key: {%if i.member_type== 'dynamic_vm_name'%}"Name"{%elif i.member_type== 'dynamic_vm_os_name'%}"OSName"{%elif i.member_type== 'dynamic_vm_computer_name'%}"ComputerName"{%else%}"Tag"{%endif%}
         operator: {%if 'dynamic_vm' in i.member_type%}"{{i.dynamic_operator}}"{%else%}"EQUALS"{%endif%}
         value: "{{i.value}}"
 {%        endif %}
