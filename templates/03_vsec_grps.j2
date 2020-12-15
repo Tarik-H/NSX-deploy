@@ -7,7 +7,6 @@ vm_tags:
 {% for i in vtags if (i.vm_name) %}
   - { vm_name: "{{i.vm_name}}", tags: [ {%if i.Tag_Environment%} {tag: "ENVIRONMENT", scope: "{{i.Tag_Environment}}"}{%endif%}{%if i.Tag_Management%} ,{tag: "Management", scope: "{{i.Tag_Management}}"}{%endif%}{%if i.Tag_SharedService%}, {tag: "SHAREDSERVICE", scope: "{{i.Tag_SharedService}}"}{%endif%}{%if i.Tag_ApplicationName%}, {tag: "application", scope: "{{i.Tag_ApplicationName}}"}{%endif%}{%if i.Tag_ApplicationTier%}, {tag: "tier", scope: "{{i.Tag_ApplicationTier}}"}{%endif%}{%if i.Tag_Critical%}, {tag: "Critical", scope: }{%endif%}{%if i.Tag_Site%}, {tag: "site", scope: "{{i.Tag_Site}}"}{%endif%}] }
 {% endfor %}
-
 {% set temp_grps= [] %}
 security_groups:
 {% for g in vsecgroups if (g.group_name) and (g.group_name not in temp_grps) %}
@@ -57,6 +56,6 @@ security_groups:
 {%        endif %}
 {%    endfor %}
 {% endif %}
-{% endfor%}  
+{% endfor%}
 
 {# this must be refined with a way to resolve external ids (Vms, physical server and cloudvm instance) and also other criterias that depends on list as value (convert from text to list)#}
