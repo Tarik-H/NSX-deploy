@@ -17,7 +17,7 @@ security_groups:
     expression:
 {% if g.member_type== 'static_ip_subnet'%}
       - resource_type: "IPAddressExpression"
-        ip_addresses: "{{g.value|split(',')}}"
+        ip_addresses: "{{g.value.split(',')}}"
 {% elif g.member_type== 'AD_group' %}
       - resource_type: "IdentityGroupExpression"
         identity_groups: ["{{g.value}}"]
