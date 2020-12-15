@@ -39,7 +39,7 @@ security_groups:
           - resource_type: "Condition"
             member_type: {%if 'dynamic_vm' in i.member_type%}"VirtualMachine"{%elif i.member_type= 'dynamic_segment_tag'%}"Segment"{%elif i.member_type= 'dynamic_ipset_tag'%}"IPSet"{%endif%}
             key: {%if i.member_type= 'dynamic_vm_name'%}"Name"{%elif i.member_type= 'dynamic_vm_os_name'%}"OSName"{%elif i.member_type= 'dynamic_vm_computer_name'%}"ComputerName"{%else%}"Tag"{%endif%}
-            operator: "{{i.dynamic_operator}}"
+            operator: {%if 'dynamic_vm' in i.member_type%}"{{i.dynamic_operator}}"{%else%}"EQUALS"{%endif%}
             value: "{{i.value}}"
 {%            if not loop.first and i.conjunction_operator %}
           - conjunction_operator: "{{i.conjunction_operator}}"
@@ -52,7 +52,7 @@ security_groups:
       - resource_type: "Condition"
         member_type: {%if 'dynamic_vm' in i.member_type%}"VirtualMachine"{%elif i.member_type= 'dynamic_segment_tag'%}"Segment"{%elif i.member_type= 'dynamic_ipset_tag'%}"IPSet"{%endif%}
         key: {%if i.member_type= 'dynamic_vm_name'%}"Name"{%elif i.member_type= 'dynamic_vm_os_name'%}"OSName"{%elif i.member_type= 'dynamic_vm_computer_name'%}"ComputerName"{%else%}"Tag"{%endif%}
-        operator: "{{i.dynamic_operator}}"
+        operator: {%if 'dynamic_vm' in i.member_type%}"{{i.dynamic_operator}}"{%else%}"EQUALS"{%endif%}
         value: "{{i.value}}"
 {%        endif %}
 {%    endfor %}
