@@ -34,24 +34,18 @@ security_groups:
 {% elif 'dynamic' in g.member_type and g.dynamic_operator and g.value %}
 {%    for i in vsecgroups if i.group_name == g.group_name %}
 {%        if  loop.length > 1 and loop.length < 6  %}
-{%            if loop.first %}
-      - expressions:
-{%            endif%}
 {%            if not loop.first and i.conjunction_operator %}
-          - conjunction_operator: "{{i.conjunction_operator}}"
-            resource_type: ConjunctionOperator
+      - conjunction_operator: "{{i.conjunction_operator}}"
+        resource_type: ConjunctionOperator
 {%            endif%}     
-          - resource_type: "Condition"
-            member_type: {%if 'dynamic_vm' in i.member_type%}"VirtualMachine"{%elif i.member_type== 'dynamic_segment_tag'%}"Segment"{%elif i.member_type== 'dynamic_ipset_tag'%}"IPSet"{%endif%}
+      - resource_type: "Condition"
+        member_type: {%if 'dynamic_vm' in i.member_type%}"VirtualMachine"{%elif i.member_type== 'dynamic_segment_tag'%}"Segment"{%elif i.member_type== 'dynamic_ipset_tag'%}"IPSet"{%endif%}
 
-            key: {%if i.member_type== 'dynamic_vm_name'%}"Name"{%elif i.member_type== 'dynamic_vm_os_name'%}"OSName"{%elif i.member_type== 'dynamic_vm_computer_name'%}"ComputerName"{%else%}"Tag"{%endif%}
+        key: {%if i.member_type== 'dynamic_vm_name'%}"Name"{%elif i.member_type== 'dynamic_vm_os_name'%}"OSName"{%elif i.member_type== 'dynamic_vm_computer_name'%}"ComputerName"{%else%}"Tag"{%endif%}
 
-            operator: {%if 'dynamic_vm' in i.member_type%}"{{i.dynamic_operator}}"{%else%}"EQUALS"{%endif%}
+        operator: {%if 'dynamic_vm' in i.member_type%}"{{i.dynamic_operator}}"{%else%}"EQUALS"{%endif%}
 
-            value: "{{i.value}}"
-{%            if loop.last %}
-        resource_type: NestedExpression
-{%            endif%}
+        value: "{{i.value}}"
 {%        elif loop.length == 1 %}
       - resource_type: "Condition"
         member_type: {%if 'dynamic_vm' in i.member_type%}"VirtualMachine"{%elif i.member_type== 'dynamic_segment_tag'%}"Segment"{%elif i.member_type== 'dynamic_ipset_tag'%}"IPSet"{%endif%}
