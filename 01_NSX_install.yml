@@ -481,7 +481,7 @@
       transport_vlan: "{{edge_overlay_vlan|default(overlay_vlan)}}"
       named_teamings: "{{item.ntm|default(omit)}}"
     loop: "{{uplink_prof_list}}"
-    when: (shared_compute|lower == 'true') and (edge_overlay_vlan != 0) and (edge_overlay_subnet|ipaddr) and ('edge' in item.name)
+    when: (shared_compute|lower == 'true') and (edge_overlay_vlan != 0) and (edge_overlay_subnet|default(false,true)|ipaddr) and ('edge' in item.name)
 
   - name: Create Edge overlay TEP IP Pool in case of shared compute cluster (policy)
     nsxt_policy_ip_pool:
@@ -507,7 +507,7 @@
           "cidr": "{{edge_overlay_subnet|ipaddr('network/prefix')}}"
         }
        ]
-    when: (shared_compute|lower == 'true') and (edge_overlay_vlan != 0) and (edge_overlay_subnet|ipaddr)
+    when: (shared_compute|lower == 'true') and (edge_overlay_vlan != 0) and (edge_overlay_subnet|default(false,true)|ipaddr)
     vars:
       ansible_python_interpreter: /usr/bin/python3
 
@@ -601,7 +601,7 @@
             # host: "{{ edge_node1_vesxi }}"
       state: present
     loop: "{{system_fabric|json_query('edge_transp_nodes[*]')}}"
-    when: (item.edge_name is defined) and (item.edge_vm_fqdn is defined) and (item.edge_vsphere_cluster is defined) and (item.edge_vm_mgmt_ip|ipaddr('address/prefix')) and (item.edge_vm_mgmt_pg is defined) and (item.edge_vm_networks is defined)
+    when: (item.edge_name is defined) and (item.edge_vm_fqdn is defined) and (item.edge_vsphere_cluster is defined) and (item.edge_vm_mgmt_ip|default(false,true)|ipaddr('address/prefix')) and (item.edge_vm_mgmt_pg is defined) and (item.edge_vm_networks is defined)
 
 
   - name: Create NSX-T Edge clusters and assign edges to them
